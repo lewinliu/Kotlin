@@ -31,6 +31,7 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
     }
 
     override fun onKeyPressed(event: KeyEvent) {
+
         when (event.code) {
             //P1
             KeyCode.W -> {
@@ -65,6 +66,7 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
             else -> {
                 println("无操作...")
             }
+
         }
     }
 
@@ -77,10 +79,10 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
             //3.按移动物的朝向筛选，并且位置在移动物朝向之前的
             val arr1 = arr.filter {
                 when (move.currentDirection) {
-                    Direction.UP -> move.x == it.x && move.y > it.y
-                    Direction.DOWN -> move.x == it.x && move.y < it.y
-                    Direction.LEFT -> move.y == it.y && move.x > it.x
-                    Direction.RIGHT -> move.y == it.y && move.x < it.x
+                    Direction.UP -> (move.x > it.x - it.width && move.x < it.x + it.width) && move.y > it.y
+                    Direction.DOWN -> (move.x > it.x - it.width && move.x < it.x + it.width) && move.y < it.y
+                    Direction.LEFT -> (move.y > it.y - it.height && move.y < it.y + it.height) && move.x > it.x
+                    Direction.RIGHT -> (move.y > it.y - it.height && move.y < it.y + it.height) && move.x < it.x
                 }
             }
             var badDirection: Direction? = null
@@ -107,21 +109,23 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
         views.clear()
 
         //添加坦克
-        tankP1 = Tank(2, 12)
+        tankP1 = Tank(2 * Config.Block64, 12 * Config.Block64)
+        tankP1.speed = 8
         views.add(tankP1)
 
-        tankP2 = Tank(10, 12, true)
+        tankP2 = Tank(10 * Config.Block64, 12 * Config.Block64, true)
+        tankP2.speed = 16
         views.add(tankP2)
 
         //添加其他
         for (y in 0 until mapList.size) {
             for (x in 0 until mapList[y].size) {
                 when (mapList[y][x]) {
-                    '砖' -> views.add(Wall(x, y))
-                    '铁' -> views.add(Steel(x, y))
-                    '草' -> views.add(Grass(x, y))
-                    '水' -> views.add(Water(x, y))
-                    '基' -> views.add(Camp(x, y))
+                    '砖' -> views.add(Wall(x * Config.Block64, y * Config.Block64))
+                    '铁' -> views.add(Steel(x * Config.Block64, y * Config.Block64))
+                    '草' -> views.add(Grass(x * Config.Block64, y * Config.Block64))
+                    '水' -> views.add(Water(x * Config.Block64, y * Config.Block64))
+                    '基' -> views.add(Camp(x * Config.Block64, y * Config.Block64))
                 }
             }
         }

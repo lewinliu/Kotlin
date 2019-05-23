@@ -8,15 +8,11 @@ object Config {
 
     const val GameIcon = "img/icon.jpg"
 
-    const val Block = 64
+    const val Block64 = 64
 
-    const val Horizontal = 13
+    const val GameWidth = Block64 * 13
 
-    const val Vertical = 13
-
-    const val GameWidth = Block * Horizontal
-
-    const val GameHeight = Block * Vertical
+    const val GameHeight = Block64 * 13
 
     // 建筑物
     const val Grass = "/img/grass.gif"

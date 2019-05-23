@@ -9,11 +9,11 @@ import org.itheima.kotlin.game.core.Painter
  */
 class Grass(override var x: Int, override var y: Int) : BaseView {
     override val width: Int
-        get() = Config.Block
+        get() = Config.Block64
     override val height: Int
-        get() = Config.Block
+        get() = Config.Block64
 
     override fun draw() {
-        Painter.drawImage(Config.Grass, x * width, y * height)
+        Painter.drawImage(Config.Grass, x , y)
     }
 }
