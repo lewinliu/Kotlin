@@ -16,6 +16,7 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
     var views = ArrayList<BaseView>()
 
     private lateinit var tankP1: Tank
+    private lateinit var tankP2: Tank
 
     override fun onCreate() {
         initMap(Maps.Map1)
@@ -48,12 +49,16 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
             }
             //P2
             KeyCode.UP -> {
+                tankP2.move(Direction.UP)
             }
             KeyCode.LEFT -> {
+                tankP2.move(Direction.LEFT)
             }
             KeyCode.DOWN -> {
+                tankP2.move(Direction.DOWN)
             }
             KeyCode.RIGHT -> {
+                tankP2.move(Direction.RIGHT)
             }
             KeyCode.ENTER -> {
             }
@@ -102,8 +107,11 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
         views.clear()
 
         //添加坦克
-        tankP1 = Tank(10, 12)
+        tankP1 = Tank(2, 12)
         views.add(tankP1)
+
+        tankP2 = Tank(10, 12, true)
+        views.add(tankP2)
 
         //添加其他
         for (y in 0 until mapList.size) {

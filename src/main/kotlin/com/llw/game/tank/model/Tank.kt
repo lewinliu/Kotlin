@@ -8,7 +8,7 @@ import org.itheima.kotlin.game.core.Painter
 /**
  * 坦克
  */
-class Tank(override var x: Int, override var y: Int) : Movable {
+class Tank(override var x: Int, override var y: Int, var isTwoPlay: Boolean = false) : Movable {
 
     override val width: Int = Config.Block
 
@@ -21,6 +21,6 @@ class Tank(override var x: Int, override var y: Int) : Movable {
     override var badDirection: Direction? = null
 
     override fun draw() {
-        Painter.drawImage(Config.getTankImage(currentDirection), x * width, y * height)
+        Painter.drawImage(Config.getTankImage(currentDirection, isTwoPlay), x * width, y * height)
     }
 }
