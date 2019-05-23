@@ -61,4 +61,30 @@ object Config {
         }
     }
 
+
+    //子弹大小
+    const val Bullet_16 = 16
+    const val Bullet_32 = 32
+
+    //子弹
+    private const val Bullet_U = "/img/shot_top.gif"
+
+    private const val Bullet_D = "/img/shot_bottom.gif"
+
+    private const val Bullet_L = "/img/shot_left.gif"
+
+    private const val Bullet_R = "/img/shot_right.gif"
+
+    /**
+     * 根据方向获取子弹图片
+     */
+    fun getBulletImage(direction: Direction): String {
+        return when (direction) {
+            Direction.UP ->  Bullet_U
+            Direction.DOWN -> Bullet_D
+            Direction.LEFT -> Bullet_L
+            Direction.RIGHT -> Bullet_R
+        }
+    }
+
 }

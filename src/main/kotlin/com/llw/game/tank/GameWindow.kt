@@ -47,6 +47,8 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
                 tankP1.move(Direction.RIGHT)
             }
             KeyCode.J -> {
+                val bullet = tankP1.shootBullet()
+                views.add(bullet)
             }
             //P2
             KeyCode.UP -> {
@@ -62,6 +64,8 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
                 tankP2.move(Direction.RIGHT)
             }
             KeyCode.ENTER -> {
+                val bullet = tankP2.shootBullet()
+                views.add(bullet)
             }
             else -> {
                 println("无操作...")
