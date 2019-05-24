@@ -51,7 +51,6 @@ interface Movable : BaseView {
             //RIGHT，未越界
             Direction.RIGHT -> if (this.x + this.speed <= Config.GameWidth - this.width) this.x += this.speed
         }
-
         println("----------------------------------->   badDirection=${this.badDirection}   this.x = ${this.x.toFloat() / this.width.toFloat()}     this.y = ${this.y.toFloat() / this.height.toFloat()}")
     }
 
@@ -59,7 +58,6 @@ interface Movable : BaseView {
      * 障碍的方向，返回null表示无障碍
      */
     fun willCollision(block: Blockade): Direction? {
-        println("block.x = ${block.x / block.width}     block.y = ${block.y / block.height}")
         when (this.currentDirection) {
             //UP，无障碍
             Direction.UP -> {

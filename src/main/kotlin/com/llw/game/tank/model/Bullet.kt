@@ -20,17 +20,19 @@ class Bullet(override var currentDirection: Direction, override var x: Int, over
         Direction.LEFT, Direction.RIGHT -> Config.Bullet_16
     }
 
-    override val speed: Int = Config.Block64 / 2
+    override val speed: Int = Config.Block64 / 8
 
     override var badDirection: Direction? = null
 
     override fun draw() {
+        if (x < 0 || y < 0 || x > Config.GameWidth || y > Config.GameHeight) return
+        println("Bullet：x=$x，y=$y")
+        Painter.drawImage(Config.getBulletImage(currentDirection), x, y)
         when (currentDirection) {
             Direction.UP -> y -= speed
             Direction.DOWN -> y += speed
             Direction.LEFT -> x -= speed
             Direction.RIGHT -> x += speed
         }
-        Painter.drawImage(Config.getBulletImage(currentDirection), x, y)
     }
 }

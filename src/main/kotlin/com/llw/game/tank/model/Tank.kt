@@ -22,21 +22,21 @@ class Tank(override var x: Int, override var y: Int, var isTwoPlay: Boolean = fa
     override var badDirection: Direction? = null
 
     override fun draw() {
-        println("isTwoPlay = $isTwoPlay,   this.x = ${this.x.toFloat() / this.width.toFloat()}     this.y = ${this.y.toFloat() / this.height.toFloat()}")
         Painter.drawImage(Config.getTankImage(currentDirection, isTwoPlay), x, y)
     }
 
     fun shootBullet(): Bullet {
+        println("Tank：x=$x，y=$y")
         return when (currentDirection) {
             Direction.UP -> {
                 //子弹从坦克中间出现，中间值 = 坦克的x坐标 + （坦克宽度 - 子弹宽度）/2
-                Bullet(currentDirection, this.x + (this.width - Config.Bullet_16) / 2, this.y)
+                Bullet(currentDirection, this.x + (this.width - Config.Bullet_16) / 2, this.y - Config.Bullet_32)
             }
             Direction.DOWN -> {
                 Bullet(currentDirection, this.x + (this.width - Config.Bullet_16) / 2, this.y + this.height)
             }
             Direction.LEFT -> {
-                Bullet(currentDirection, this.x, this.y + (this.height - Config.Bullet_16) / 2)
+                Bullet(currentDirection, this.x - Config.Bullet_32, this.y + (this.height - Config.Bullet_16) / 2)
             }
             Direction.RIGHT -> {
                 Bullet(currentDirection, this.x + this.width, this.y + (this.height - Config.Bullet_16) / 2)
