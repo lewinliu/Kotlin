@@ -10,6 +10,7 @@ import com.llw.game.tank.model.*
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyEvent
 import org.itheima.kotlin.game.core.Window
+import java.lang.Math
 
 class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Config.GameHeight) {
 
@@ -83,10 +84,12 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
             //3.按移动物的朝向筛选，并且位置在移动物朝向之前的
             val arr1 = arr.filter {
                 when (move.currentDirection) {
-                    Direction.UP -> (move.x > it.x - it.width && move.x < it.x + it.width) && move.y > it.y
-                    Direction.DOWN -> (move.x > it.x - it.width && move.x < it.x + it.width) && move.y < it.y
-                    Direction.LEFT -> (move.y > it.y - it.height && move.y < it.y + it.height) && move.x > it.x
-                    Direction.RIGHT -> (move.y > it.y - it.height && move.y < it.y + it.height) && move.x < it.x
+                    //上下筛选 Math.abs(it.x - move.x)>0 && Math.abs(it.x - move.x)<move.width
+                    Direction.UP -> Math.abs(it.x - move.x) >= 0 && Math.abs(it.x - move.x) < move.width && move.y > it.y
+                    Direction.DOWN -> Math.abs(it.x - move.x) >= 0 && Math.abs(it.x - move.x) < move.width && move.y < it.y
+                    //左右筛选 Math.abs(it.y - move.y)>0 && Math.abs(it.y - move.y)<move.height
+                    Direction.LEFT -> Math.abs(it.y - move.y) >= 0 && Math.abs(it.y - move.y) < move.height && move.x > it.x
+                    Direction.RIGHT -> Math.abs(it.y - move.y) >= 0 && Math.abs(it.y - move.y) < move.height && move.x < it.x
                 }
             }
             var badDirection: Direction? = null
