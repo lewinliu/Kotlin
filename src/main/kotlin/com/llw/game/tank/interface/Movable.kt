@@ -6,10 +6,10 @@ import com.llw.game.tank.enum.Direction
 /**
  * 可移动的
  */
-interface Movable : BaseView {
+interface Movable : Blockade {
 
     /**
-     * 坦克当前的方向
+     * 当前的方向
      */
     var currentDirection: Direction
 

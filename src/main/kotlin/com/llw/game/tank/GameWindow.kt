@@ -1,8 +1,6 @@
 package com.llw.game.tank
 
-import com.llw.game.tank.`interface`.BaseView
-import com.llw.game.tank.`interface`.Blockade
-import com.llw.game.tank.`interface`.Movable
+import com.llw.game.tank.`interface`.*
 import com.llw.game.tank.config.Config
 import com.llw.game.tank.config.Maps
 import com.llw.game.tank.enum.Direction
@@ -76,12 +74,14 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
     }
 
     override fun onRefresh() {
-        //1.遍历所有移动物
+
+        //坦克运动
         views.filter { it is Movable }.forEach { move ->
+            //1.遍历所有坦克
             move as Movable
             //2.是障碍物，并且不是自身
             val arr = views.filter { (it is Blockade) and (move != it) }
-            //3.按移动物的朝向筛选，并且位置在移动物朝向之前的
+            //3.按坦克的朝向筛选，并且位置在坦克朝向之前的
             val arr1 = arr.filter {
                 when (move.currentDirection) {
                     //上下筛选 Math.abs(it.x - move.x)>0 && Math.abs(it.x - move.x)<move.width
@@ -94,7 +94,7 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
             }
             var badDirection: Direction? = null
             repeat(arr1.size) {
-                //4.筛选最靠近移动物的障碍物
+                //4.筛选最靠近坦克的障碍物
                 val block: Blockade = when (move.currentDirection) {
                     Direction.UP -> arr1.maxBy { it.y } as Blockade
                     Direction.DOWN -> arr1.minBy { it.y } as Blockade
@@ -104,9 +104,30 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
                 //5.判断此障碍物是否发生阻挡
                 badDirection = move.willCollision(block)
             }
-            //6.将结果通知移动物
+            //6.将结果通知坦克
             move.notifyCollision(badDirection)
         }
+
+        //自动运动
+        views.filter { it is AutoMovable }.forEach {
+            it as AutoMovable
+            it.autoMove()
+        }
+
+        //销毁
+        views.filter { it is Destroyable }.forEach {
+            it as Destroyable
+            if (it.isDestroyable()) views.remove(it)
+        }
+
+        //攻击
+        views.filter { it is Attackable }.forEach { attack ->
+            views.filter { it is Sufferable }.forEach {suffer ->
+                attack
+                suffer
+            }
+        }
+
     }
 
     /**

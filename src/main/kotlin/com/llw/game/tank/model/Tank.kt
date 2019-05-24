@@ -1,6 +1,7 @@
 package com.llw.game.tank.model
 
 import com.llw.game.tank.`interface`.Blockade
+import com.llw.game.tank.`interface`.Destroyable
 import com.llw.game.tank.`interface`.Movable
 import com.llw.game.tank.config.Config
 import com.llw.game.tank.enum.Direction
@@ -9,7 +10,9 @@ import org.itheima.kotlin.game.core.Painter
 /**
  * 坦克
  */
-class Tank(override var x: Int, override var y: Int, var isTwoPlay: Boolean = false) : Movable, Blockade {
+class Tank(override var x: Int, override var y: Int, var isTwoPlay: Boolean = false) : Movable, Destroyable {
+
+    override var isDestroy: Boolean = false
 
     override val width: Int = Config.Block64
 
@@ -25,6 +28,9 @@ class Tank(override var x: Int, override var y: Int, var isTwoPlay: Boolean = fa
         Painter.drawImage(Config.getTankImage(currentDirection, isTwoPlay), x, y)
     }
 
+    /**
+     * 发射子弹
+     */
     fun shootBullet(): Bullet {
         println("Tank：x=$x，y=$y")
         return when (currentDirection) {
