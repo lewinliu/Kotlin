@@ -51,7 +51,6 @@ interface Movable : BaseView {
             //RIGHT，未越界
             Direction.RIGHT -> if (this.x + this.speed <= Config.GameWidth - this.width) this.x += this.speed
         }
-        println("----------------------------------->   badDirection=${this.badDirection}   this.x = ${this.x.toFloat() / this.width.toFloat()}     this.y = ${this.y.toFloat() / this.height.toFloat()}")
     }
 
     /**
@@ -76,7 +75,6 @@ interface Movable : BaseView {
                 if (this.x + this.width + this.speed <= block.x) return null
             }
         }
-        println("当前方向有障碍 badDirection = ${this.badDirection}    currentDirection = ${this.currentDirection}")
         return this.currentDirection
     }
 

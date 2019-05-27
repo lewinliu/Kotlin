@@ -1,8 +1,7 @@
 package com.llw.game.tank.model
 
-import com.llw.game.tank.`interface`.Attackable
+import com.llw.game.tank.`interface`.Attack
 import com.llw.game.tank.`interface`.AutoMovable
-import com.llw.game.tank.`interface`.Destroyable
 import com.llw.game.tank.config.Config
 import com.llw.game.tank.enum.Direction
 import org.itheima.kotlin.game.core.Painter
@@ -10,7 +9,7 @@ import org.itheima.kotlin.game.core.Painter
 /**
  * 子弹
  */
-class Bullet(override var currentDirection: Direction, override var x: Int, override var y: Int) : AutoMovable, Destroyable, Attackable {
+class Bullet(override var currentDirection: Direction, override var x: Int, override var y: Int) : AutoMovable, Attack {
 
     override val attack: Int = 1
 

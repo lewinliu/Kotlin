@@ -1,8 +1,6 @@
 package com.llw.game.tank.model
 
-import com.llw.game.tank.`interface`.Blockade
-import com.llw.game.tank.`interface`.Destroyable
-import com.llw.game.tank.`interface`.Movable
+import com.llw.game.tank.`interface`.*
 import com.llw.game.tank.config.Config
 import com.llw.game.tank.enum.Direction
 import org.itheima.kotlin.game.core.Painter
@@ -10,7 +8,9 @@ import org.itheima.kotlin.game.core.Painter
 /**
  * 坦克
  */
-class Tank(override var x: Int, override var y: Int, var isTwoPlay: Boolean = false) : Movable, Blockade, Destroyable {
+class Tank(override var x: Int, override var y: Int, var isTwoPlay: Boolean = false) : Movable, Blockade, Suffer {
+
+    override var suffer: Int = 100
 
     override var isDestroy: Boolean = false
 
@@ -28,11 +28,11 @@ class Tank(override var x: Int, override var y: Int, var isTwoPlay: Boolean = fa
         Painter.drawImage(Config.getTankImage(currentDirection, isTwoPlay), x, y)
     }
 
+
     /**
      * 发射子弹
      */
     fun shootBullet(): Bullet {
-        println("Tank：x=$x，y=$y")
         return when (currentDirection) {
             Direction.UP -> {
                 //子弹从坦克中间出现，中间值 = 坦克的x坐标 + （坦克宽度 - 子弹宽度）/2
