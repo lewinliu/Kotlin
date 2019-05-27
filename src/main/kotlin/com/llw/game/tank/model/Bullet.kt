@@ -10,8 +10,7 @@ import org.itheima.kotlin.game.core.Painter
 /**
  * 子弹
  */
-class Bullet(override var currentDirection: Direction, override var x: Int, override var y: Int) : AutoMovable,
-    Destroyable, Attackable {
+class Bullet(override var currentDirection: Direction, override var x: Int, override var y: Int) : AutoMovable, Destroyable, Attackable {
 
     override val attack: Int = 1
 

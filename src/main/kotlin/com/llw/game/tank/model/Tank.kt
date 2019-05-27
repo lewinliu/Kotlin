@@ -10,7 +10,7 @@ import org.itheima.kotlin.game.core.Painter
 /**
  * 坦克
  */
-class Tank(override var x: Int, override var y: Int, var isTwoPlay: Boolean = false) : Movable, Destroyable {
+class Tank(override var x: Int, override var y: Int, var isTwoPlay: Boolean = false) : Movable, Blockade, Destroyable {
 
     override var isDestroy: Boolean = false
 
