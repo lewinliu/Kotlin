@@ -9,42 +9,34 @@ import com.llw.game.tank.tools.TimeTool
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyEvent
 import org.itheima.kotlin.game.core.Window
-import java.lang.Math
-import java.util.concurrent.CopyOnWriteArrayList
 
 class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Config.GameHeight) {
 
-    private var views = CopyOnWriteArrayList<BaseView>()
-
+    private val collection = ViewCollection()
     private lateinit var tankP1: Tank
     private lateinit var tankP2: Tank
-
     private var shotP1: Long = 0
     private var shotP2: Long = 0
 
-    override fun onCreate() {
-        initMap(Maps.Map1)
-    }
+    override fun onCreate() = initMap(Maps.Map1)
 
 
-    override fun onDisplay() {
-        //打印视图
-        views.forEach {
-            it.draw()
-        }
-    }
+    //打印视图
+    override fun onDisplay() = collection.draw()
 
     override fun onKeyPressed(event: KeyEvent) {
         keyControl(event)
     }
 
+    @Synchronized
     override fun onRefresh() {
 
         //1.遍历所有运动物
-        views.filter { it is Movable }.forEach { move ->
+        collection.filter { it is Movable }.forEach { move ->
             move as Movable
             //2.是障碍物，并且不是自身
-            val arr = views.filter { (it is Blockade) and (move != it) }
+            val arr = collection.filter { (it is Blockade) and (move != it) }
+
             //3.按运动物的朝向筛选，并且位置在运动物朝向之前的
             val arr1 = screen(arr, move)
             var badDirection: Direction? = null
@@ -64,30 +56,27 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
 
             //自动运动
             if (move is AutoMovable) {
-                move.notifyCollision(badDirection)
                 move.autoMove()
             }
         }
 
         //销毁
-        views.filter { it is Destroyable }.forEach {
-            it as Destroyable
-            if (it.isDestroyable()) {
-                views.remove(it)
+        // removeView()
+        collection.remove { view ->
+            if (view is Destroyable) {
+                return@remove view.isDestroyable()
             }
+            return@remove false
         }
 
         //攻击
-        views.filter { it is Attack && it is AutoMovable }.forEach { attack ->
+        collection.filter { it is Attack && it is AutoMovable }.forEach { attack ->
             attack as AutoMovable
-            val arr = views.filter { it is Suffer }
-            val arr1 = screen(arr,attack)
+            val arr = collection.filter { it is Suffer }
+            val arr1 = screen(arr, attack)
             //被攻击
-            repeat(arr1.size) {
-
-            }
+            repeat(arr1.size) { }
         }
-
     }
 
     /**
@@ -110,26 +99,26 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
      * 添加地图
      */
     private fun initMap(mapList: Array<Array<Char>>) {
-        views.clear()
+        collection.clear()
 
         //添加坦克
         tankP1 = Tank(2 * Config.Block64, 12 * Config.Block64)
         tankP1.speed = 8
-        views.add(tankP1)
+        collection.add(tankP1)
 
         tankP2 = Tank(10 * Config.Block64, 12 * Config.Block64, true)
         tankP2.speed = 16
-        views.add(tankP2)
+        collection.add(tankP2)
 
         //添加其他
         for (y in 0 until mapList.size) {
             for (x in 0 until mapList[y].size) {
                 when (mapList[y][x]) {
-                    '砖' -> views.add(Wall(x * Config.Block64, y * Config.Block64))
-                    '铁' -> views.add(Steel(x * Config.Block64, y * Config.Block64))
-                    '草' -> views.add(Grass(x * Config.Block64, y * Config.Block64))
-                    '水' -> views.add(Water(x * Config.Block64, y * Config.Block64))
-                    '基' -> views.add(Camp(x * Config.Block64, y * Config.Block64))
+                    '砖' -> collection.add(Wall(x * Config.Block64, y * Config.Block64))
+                    '铁' -> collection.add(Steel(x * Config.Block64, y * Config.Block64))
+                    '草' -> collection.add(Grass(x * Config.Block64, y * Config.Block64))
+                    '水' -> collection.add(Water(x * Config.Block64, y * Config.Block64))
+                    '基' -> collection.add(Camp(x * Config.Block64, y * Config.Block64))
                 }
             }
         }
@@ -138,55 +127,104 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
     /**
      * 按键操作
      */
+    @Synchronized
     private fun keyControl(event: KeyEvent) {
-        when (event.code) {
-            //P1
-            KeyCode.W -> {
-                tankP1.move(Direction.UP)
-            }
-            KeyCode.A -> {
-                tankP1.move(Direction.LEFT)
-            }
-            KeyCode.S -> {
-                tankP1.move(Direction.DOWN)
-            }
-            KeyCode.D -> {
-                tankP1.move(Direction.RIGHT)
-            }
-            KeyCode.J -> {
-                if (!TimeTool.whetherAttack(shotP1, 500)) {
-                    return
-                }
-                shotP1 = System.currentTimeMillis()
-                val bullet = tankP1.shootBullet()
-                views.add(bullet)
-            }
-            //P2
-            KeyCode.UP -> {
-                tankP2.move(Direction.UP)
-            }
-            KeyCode.LEFT -> {
-                tankP2.move(Direction.LEFT)
-            }
-            KeyCode.DOWN -> {
-                tankP2.move(Direction.DOWN)
-            }
-            KeyCode.RIGHT -> {
-                tankP2.move(Direction.RIGHT)
-            }
-            KeyCode.ENTER -> {
-                if (!TimeTool.whetherAttack(shotP2, 500)) {
-                    return
-                }
-                shotP2 = System.currentTimeMillis()
-                val bullet = tankP2.shootBullet()
-                views.add(bullet)
-            }
-            else -> {
-                println("无操作...")
-            }
+        synchronized(GameWindow::class.java) {
 
+
+            when (event.code) {
+                //P1
+                KeyCode.W -> {
+                    tankP1.move(Direction.UP)
+                }
+                KeyCode.A -> {
+                    tankP1.move(Direction.LEFT)
+                }
+                KeyCode.S -> {
+                    tankP1.move(Direction.DOWN)
+                }
+                KeyCode.D -> {
+                    tankP1.move(Direction.RIGHT)
+                }
+                KeyCode.J -> {
+                    if (!TimeTool.whetherAttack(shotP1, 500)) {
+                        return
+                    }
+                    shotP1 = System.currentTimeMillis()
+                    val bullet = tankP1.shootBullet()
+                    collection.add(bullet)
+                }
+                //P2
+                KeyCode.UP -> {
+                    tankP2.move(Direction.UP)
+                }
+                KeyCode.LEFT -> {
+                    tankP2.move(Direction.LEFT)
+                }
+                KeyCode.DOWN -> {
+                    tankP2.move(Direction.DOWN)
+                }
+                KeyCode.RIGHT -> {
+                    tankP2.move(Direction.RIGHT)
+                }
+                KeyCode.ENTER -> {
+                    if (!TimeTool.whetherAttack(shotP2, 500)) {
+                        return
+                    }
+                    shotP2 = System.currentTimeMillis()
+                    val bullet = tankP2.shootBullet()
+                    collection.add(bullet)
+                }
+                else -> {
+                    println("无操作...")
+                }
+            }
         }
+    }
+
+    class ViewCollection {
+        private var views = ArrayList<BaseView>()
+
+        @Synchronized
+        fun draw() {
+            synchronized(ViewCollection::class.java) {
+                views.forEach { it.draw() }
+            }
+        }
+
+        @Synchronized
+        fun filter(predicate: (BaseView) -> Boolean): List<BaseView> {
+            synchronized(GameWindow::class.java) {
+                return views.filter(predicate)
+            }
+        }
+
+        @Synchronized
+        fun add(view: BaseView) {
+            synchronized(ViewCollection::class.java) {
+                views.add(view)
+            }
+        }
+
+        @Synchronized
+        fun remove(ifs: (view: BaseView) -> Boolean) {
+            synchronized(ViewCollection::class.java) {
+                val it = views.listIterator()
+                while (it.hasNext()) {
+                    val v = it.next()
+                    if (ifs(v)) it.remove()
+                }
+            }
+        }
+
+        @Synchronized
+        fun clear() {
+            synchronized(ViewCollection::class.java) {
+                if (views.isEmpty()) return
+                views.clear()
+            }
+        }
+
     }
 
 }
