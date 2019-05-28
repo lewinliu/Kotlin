@@ -1,8 +1,6 @@
 package com.llw.game.tank.model
 
-import com.llw.game.tank.`interface`.Attack
 import com.llw.game.tank.`interface`.Blockade
-import com.llw.game.tank.`interface`.Destroyable
 import com.llw.game.tank.`interface`.Suffer
 import com.llw.game.tank.config.Config
 import org.itheima.kotlin.game.core.Painter

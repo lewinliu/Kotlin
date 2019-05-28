@@ -125,55 +125,52 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
     /**
      * 按键操作
      */
-    @Synchronized
     private fun keyControl(event: KeyEvent) {
-        synchronized(GameWindow::class.java) {
-            when (event.code) {
-                //P1
-                KeyCode.W -> {
-                    tankP1.move(Direction.UP)
+        when (event.code) {
+            //P1
+            KeyCode.W -> {
+                tankP1.move(Direction.UP)
+            }
+            KeyCode.A -> {
+                tankP1.move(Direction.LEFT)
+            }
+            KeyCode.S -> {
+                tankP1.move(Direction.DOWN)
+            }
+            KeyCode.D -> {
+                tankP1.move(Direction.RIGHT)
+            }
+            KeyCode.J -> {
+                if (!TimeTool.whetherAttack(shotP1, 500)) {
+                    return
                 }
-                KeyCode.A -> {
-                    tankP1.move(Direction.LEFT)
+                shotP1 = System.currentTimeMillis()
+                val bullet = tankP1.shootBullet()
+                collection.add(bullet)
+            }
+            //P2
+            KeyCode.UP -> {
+                tankP2.move(Direction.UP)
+            }
+            KeyCode.LEFT -> {
+                tankP2.move(Direction.LEFT)
+            }
+            KeyCode.DOWN -> {
+                tankP2.move(Direction.DOWN)
+            }
+            KeyCode.RIGHT -> {
+                tankP2.move(Direction.RIGHT)
+            }
+            KeyCode.ENTER -> {
+                if (!TimeTool.whetherAttack(shotP2, 500)) {
+                    return
                 }
-                KeyCode.S -> {
-                    tankP1.move(Direction.DOWN)
-                }
-                KeyCode.D -> {
-                    tankP1.move(Direction.RIGHT)
-                }
-                KeyCode.J -> {
-                    if (!TimeTool.whetherAttack(shotP1, 500)) {
-                        return
-                    }
-                    shotP1 = System.currentTimeMillis()
-                    val bullet = tankP1.shootBullet()
-                    collection.add(bullet)
-                }
-                //P2
-                KeyCode.UP -> {
-                    tankP2.move(Direction.UP)
-                }
-                KeyCode.LEFT -> {
-                    tankP2.move(Direction.LEFT)
-                }
-                KeyCode.DOWN -> {
-                    tankP2.move(Direction.DOWN)
-                }
-                KeyCode.RIGHT -> {
-                    tankP2.move(Direction.RIGHT)
-                }
-                KeyCode.ENTER -> {
-                    if (!TimeTool.whetherAttack(shotP2, 500)) {
-                        return
-                    }
-                    shotP2 = System.currentTimeMillis()
-                    val bullet = tankP2.shootBullet()
-                    collection.add(bullet)
-                }
-                else -> {
-                    println("无操作...")
-                }
+                shotP2 = System.currentTimeMillis()
+                val bullet = tankP2.shootBullet()
+                collection.add(bullet)
+            }
+            else -> {
+                println("无操作...")
             }
         }
     }

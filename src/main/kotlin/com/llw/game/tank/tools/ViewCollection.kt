@@ -23,7 +23,9 @@ class ViewCollection {
     @Synchronized
     fun add(view: BaseView) {
         synchronized(ViewCollection::class.java) {
-            views.add(view)
+            val it = views.listIterator()
+            it.add(view)
+            println("-------->add $view,    view(${view.x},${view.y})")
         }
     }
 
@@ -33,7 +35,10 @@ class ViewCollection {
             val it = views.listIterator()
             while (it.hasNext()) {
                 val v = it.next()
-                if (ifs(v)) it.remove()
+                if (ifs(v)) {
+                    println("-------->remove $v,    view(${v.x},${v.y})")
+                    it.remove()
+                }
             }
         }
     }
