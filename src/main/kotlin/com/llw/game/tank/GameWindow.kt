@@ -6,6 +6,7 @@ import com.llw.game.tank.config.Maps
 import com.llw.game.tank.enum.Direction
 import com.llw.game.tank.model.*
 import com.llw.game.tank.tools.TimeTool
+import com.llw.game.tank.tools.ViewCollection
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyEvent
 import org.itheima.kotlin.game.core.Window
@@ -18,19 +19,16 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
     private var shotP1: Long = 0
     private var shotP2: Long = 0
 
+    //
     override fun onCreate() = initMap(Maps.Map1)
-
 
     //打印视图
     override fun onDisplay() = collection.draw()
 
-    override fun onKeyPressed(event: KeyEvent) {
-        keyControl(event)
-    }
+    //
+    override fun onKeyPressed(event: KeyEvent) = keyControl(event)
 
-    @Synchronized
     override fun onRefresh() {
-
         //1.遍历所有运动物
         collection.filter { it is Movable }.forEach { move ->
             move as Movable
@@ -130,8 +128,6 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
     @Synchronized
     private fun keyControl(event: KeyEvent) {
         synchronized(GameWindow::class.java) {
-
-
             when (event.code) {
                 //P1
                 KeyCode.W -> {
@@ -180,51 +176,6 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
                 }
             }
         }
-    }
-
-    class ViewCollection {
-        private var views = ArrayList<BaseView>()
-
-        @Synchronized
-        fun draw() {
-            synchronized(ViewCollection::class.java) {
-                views.forEach { it.draw() }
-            }
-        }
-
-        @Synchronized
-        fun filter(predicate: (BaseView) -> Boolean): List<BaseView> {
-            synchronized(GameWindow::class.java) {
-                return views.filter(predicate)
-            }
-        }
-
-        @Synchronized
-        fun add(view: BaseView) {
-            synchronized(ViewCollection::class.java) {
-                views.add(view)
-            }
-        }
-
-        @Synchronized
-        fun remove(ifs: (view: BaseView) -> Boolean) {
-            synchronized(ViewCollection::class.java) {
-                val it = views.listIterator()
-                while (it.hasNext()) {
-                    val v = it.next()
-                    if (ifs(v)) it.remove()
-                }
-            }
-        }
-
-        @Synchronized
-        fun clear() {
-            synchronized(ViewCollection::class.java) {
-                if (views.isEmpty()) return
-                views.clear()
-            }
-        }
-
     }
 
 }
