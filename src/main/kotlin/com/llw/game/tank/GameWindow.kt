@@ -32,24 +32,16 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
         //1.遍历所有运动物
         collection.filter { it is Movable }.forEach { move ->
             move as Movable
-            //2.是障碍物，并且不是自身
-            val arr = collection.filter { (it is Blockade) and (move != it) }
-
-            //3.按运动物的朝向筛选，并且位置在运动物朝向之前的
-            val arr1 = screen(arr, move)
+            //2.位置在运动物朝向之前的障碍物
+            val arr1 = viewFilter(move).filter { (it is Blockade) and (move != it) }
             var badDirection: Direction? = null
             repeat(arr1.size) {
-                //4.筛选最靠近运动物的障碍物
-                val block: Blockade = when (move.currentDirection) {
-                    Direction.UP -> arr1.maxBy { it.y } as Blockade
-                    Direction.DOWN -> arr1.minBy { it.y } as Blockade
-                    Direction.LEFT -> arr1.maxBy { it.x } as Blockade
-                    Direction.RIGHT -> arr1.minBy { it.x } as Blockade
-                }
-                //5.判断此障碍物是否发生阻挡
+                //3.筛选最靠近运动物的障碍物
+                val block = nearestFilter(arr1, move) as Blockade
+                //4.判断此障碍物是否发生阻挡
                 badDirection = move.willCollision(block)
             }
-            //6.将结果通知运动物
+            //5.将结果通知运动物
             move.notifyCollision(badDirection)
 
             //自动运动
@@ -59,36 +51,38 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
         }
 
         //销毁
-        // removeView()
         collection.remove { view ->
             if (view is Destroyable) {
                 return@remove view.isDestroyable()
             }
             return@remove false
         }
+    }
 
-        //攻击
-        collection.filter { it is Attack && it is AutoMovable }.forEach { attack ->
-            attack as AutoMovable
-            val arr = collection.filter { it is Suffer }
-            val arr1 = screen(arr, attack)
-            //被攻击
-            repeat(arr1.size) { }
+    /**
+     * 筛选最靠近运动物的View
+     */
+    private fun nearestFilter(list: List<BaseView>, move: Movable): BaseView? {
+        return when (move.currentDirection) {
+            Direction.UP -> list.maxBy { it.y }
+            Direction.DOWN -> list.minBy { it.y }
+            Direction.LEFT -> list.maxBy { it.x }
+            Direction.RIGHT -> list.minBy { it.x }
         }
     }
 
     /**
      * 移动物 移动方向上的 障碍物筛选
      */
-    private fun screen(arr: List<BaseView>, move: Movable): List<BaseView> {
-        return arr.filter {
+    private fun viewFilter(move: Movable): List<BaseView> {
+        return collection.filter {
             when (move.currentDirection) {
                 //上下筛选 Math.abs(it.x - move.x)>0 && Math.abs(it.x - move.x)<move.width
-                Direction.UP -> Math.abs(it.x - move.x) >= 0 && Math.abs(it.x - move.x) < move.width && move.y > it.y
-                Direction.DOWN -> Math.abs(it.x - move.x) >= 0 && Math.abs(it.x - move.x) < move.width && move.y < it.y
+                Direction.UP ->  Math.abs(it.x - move.x) < move.width && move.y > it.y
+                Direction.DOWN ->  Math.abs(it.x - move.x) < move.width && move.y < it.y
                 //左右筛选 Math.abs(it.y - move.y)>0 && Math.abs(it.y - move.y)<move.height
-                Direction.LEFT -> Math.abs(it.y - move.y) >= 0 && Math.abs(it.y - move.y) < move.height && move.x > it.x
-                Direction.RIGHT -> Math.abs(it.y - move.y) >= 0 && Math.abs(it.y - move.y) < move.height && move.x < it.x
+                Direction.LEFT ->  Math.abs(it.y - move.y) < move.height && move.x > it.x
+                Direction.RIGHT ->  Math.abs(it.y - move.y) < move.height && move.x < it.x
             }
         }
     }
@@ -98,15 +92,6 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
      */
     private fun initMap(mapList: Array<Array<Char>>) {
         collection.clear()
-
-        //添加坦克
-        tankP1 = Tank(2 * Config.Block64, 12 * Config.Block64)
-        tankP1.speed = 8
-        collection.add(tankP1)
-
-        tankP2 = Tank(10 * Config.Block64, 12 * Config.Block64, true)
-        tankP2.speed = 16
-        collection.add(tankP2)
 
         //添加其他
         for (y in 0 until mapList.size) {
@@ -120,6 +105,17 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
                 }
             }
         }
+
+
+        //添加坦克
+        tankP1 = Tank(2 * Config.Block64, 12 * Config.Block64)
+        tankP1.speed = 8
+        collection.add(tankP1)
+
+        tankP2 = Tank(10 * Config.Block64, 12 * Config.Block64, true)
+        tankP2.speed = 16
+        collection.add(tankP2)
+
     }
 
     /**
