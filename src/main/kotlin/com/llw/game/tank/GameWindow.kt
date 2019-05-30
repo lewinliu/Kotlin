@@ -77,12 +77,12 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
     private fun viewFilter(move: Movable): List<BaseView> {
         return collection.filter {
             when (move.currentDirection) {
-                //上下筛选 Math.abs(it.x - move.x)>0 && Math.abs(it.x - move.x)<move.width
-                Direction.UP ->  Math.abs(it.x - move.x) < move.width && move.y > it.y
-                Direction.DOWN ->  Math.abs(it.x - move.x) < move.width && move.y < it.y
-                //左右筛选 Math.abs(it.y - move.y)>0 && Math.abs(it.y - move.y)<move.height
-                Direction.LEFT ->  Math.abs(it.y - move.y) < move.height && move.x > it.x
-                Direction.RIGHT ->  Math.abs(it.y - move.y) < move.height && move.x < it.x
+                //上下筛选
+                Direction.UP -> Math.abs(it.x - move.x) < move.width && move.y > it.y
+                Direction.DOWN -> Math.abs(it.x - move.x) < move.width && move.y < it.y
+                //左右筛选
+                Direction.LEFT -> Math.abs(it.y - move.y) < move.height && move.x > it.x
+                Direction.RIGHT -> Math.abs(it.y - move.y) < move.height && move.x < it.x
             }
         }
     }
@@ -97,22 +97,21 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
         for (y in 0 until mapList.size) {
             for (x in 0 until mapList[y].size) {
                 when (mapList[y][x]) {
-                    '砖' -> collection.add(Wall(x * Config.Block64, y * Config.Block64))
-                    '铁' -> collection.add(Steel(x * Config.Block64, y * Config.Block64))
-                    '草' -> collection.add(Grass(x * Config.Block64, y * Config.Block64))
-                    '水' -> collection.add(Water(x * Config.Block64, y * Config.Block64))
-                    '基' -> collection.add(Camp(x * Config.Block64, y * Config.Block64))
+                    '砖' -> collection.add(Wall(x, y))
+                    '铁' -> collection.add(Steel(x, y))
+                    '草' -> collection.add(Grass(x, y))
+                    '水' -> collection.add(Water(x, y))
+                    '基' -> collection.add(Camp(x, y))
                 }
             }
         }
 
-
         //添加坦克
-        tankP1 = Tank(2 * Config.Block64, 12 * Config.Block64)
-        tankP1.speed = 8
+        tankP1 = Tank(2, 12)
+        tankP1.speed = 16
         collection.add(tankP1)
 
-        tankP2 = Tank(10 * Config.Block64, 12 * Config.Block64, true)
+        tankP2 = Tank(10, 12, true)
         tankP2.speed = 16
         collection.add(tankP2)
 

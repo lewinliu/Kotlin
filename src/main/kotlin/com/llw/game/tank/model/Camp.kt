@@ -7,11 +7,13 @@ import org.itheima.kotlin.game.core.Painter
 /**
  * 基地
  */
-class Camp(override var x: Int, override var y: Int) : Blockade {
-    override val width: Int
-        get() = Config.Block64
-    override val height: Int
-        get() = Config.Block64
+class Camp(viewX: Int, viewY: Int) : Blockade {
+
+    override val width: Int  = Config.Block64
+    override val height: Int  = Config.Block64
+
+    override var x: Int = Config.Block64 * viewX
+    override var y: Int = Config.Block64 * viewY
 
     override fun draw() {
         Painter.drawImage(Config.Camp, x, y)
