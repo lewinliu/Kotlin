@@ -19,27 +19,40 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
     private var shotP1: Long = 0
     private var shotP2: Long = 0
 
-    //
-    override fun onCreate() = initMap(Maps.Map1)
+    //创建地图
+    override fun onCreate() = addMap(Maps.Map1)
 
-    //打印视图
+    //打印地图
     override fun onDisplay() = collection.draw()
 
-    //
+    //按键监听
     override fun onKeyPressed(event: KeyEvent) = keyControl(event)
 
+    //耗时操作
     override fun onRefresh() {
+
         //1.遍历所有运动物
         collection.filter { it is Movable }.forEach { move ->
             move as Movable
             //2.位置在运动物朝向之前的障碍物
             val arr1 = viewFilter(move).filter { (it is Blockade) and (move != it) }
             var badDirection: Direction? = null
+
             repeat(arr1.size) {
                 //3.筛选最靠近运动物的障碍物
                 val block = nearestFilter(arr1, move) as Blockade
+
                 //4.判断此障碍物是否发生阻挡
                 badDirection = move.willCollision(block)
+
+                //当 攻 遇到 受
+                if (null != badDirection && move is Attack && !move.isDestroyable() && block is Suffer) {
+                    move.isDestroy = true
+                    //打击效果
+                    collection.add(Blast(move))
+                    println("攻 击 受 :   攻：${move.attack}，   受：${block.suffer}}")
+                    block.notifySuffer(move.attack)
+                }
             }
             //5.将结果通知运动物
             move.notifyCollision(badDirection)
@@ -78,11 +91,19 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
         return collection.filter {
             when (move.currentDirection) {
                 //上下筛选
-                Direction.UP -> Math.abs(it.x - move.x) < move.width && move.y > it.y
-                Direction.DOWN -> Math.abs(it.x - move.x) < move.width && move.y < it.y
+                Direction.UP ->
+                    if (move.x >= it.x && move.x + move.width <= it.x + it.width) move.y > it.y
+                    else Math.abs(it.x - move.x) < move.width && move.y > it.y
+                Direction.DOWN ->
+                    if (move.x >= it.x && move.x + move.width <= it.x + it.width) move.y < it.y
+                    else Math.abs(it.x - move.x) < move.width && move.y < it.y
                 //左右筛选
-                Direction.LEFT -> Math.abs(it.y - move.y) < move.height && move.x > it.x
-                Direction.RIGHT -> Math.abs(it.y - move.y) < move.height && move.x < it.x
+                Direction.LEFT ->
+                    if (move.y >= it.y && move.y + move.height <= it.y + it.height) move.x > it.x
+                    else Math.abs(it.y - move.y) < move.height && move.x > it.x
+                Direction.RIGHT ->
+                    if (move.y >= it.y && move.y + move.height <= it.y + it.height) move.x < it.x
+                    else Math.abs(it.y - move.y) < move.height && move.x < it.x
             }
         }
     }
@@ -90,9 +111,8 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
     /**
      * 添加地图
      */
-    private fun initMap(mapList: Array<Array<Char>>) {
+    private fun addMap(mapList: Array<Array<Char>>) {
         collection.clear()
-
         //添加其他
         for (y in 0 until mapList.size) {
             for (x in 0 until mapList[y].size) {

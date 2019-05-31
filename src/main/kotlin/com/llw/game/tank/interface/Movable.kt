@@ -43,13 +43,21 @@ interface Movable : BaseView {
         //移动位置
         when (this.currentDirection) {
             //UP，未越界
-            Direction.UP -> if (this.y - this.speed >= 0) this.y -= this.speed
+            Direction.UP ->
+                if (this.y - this.speed >= 0) this.y -= this.speed
+                else this.y = 0
             //DOWN，未越界
-            Direction.DOWN -> if (this.y + this.speed <= Config.GameHeight - this.height) this.y += this.speed
+            Direction.DOWN ->
+                if (this.y + this.speed <= Config.GameHeight - this.height) this.y += this.speed
+                else this.y = Config.GameHeight - this.height
             //LEFT，未越界
-            Direction.LEFT -> if (this.x - this.speed >= 0) this.x -= this.speed
+            Direction.LEFT ->
+                if (this.x - this.speed >= 0) this.x -= this.speed
+                else this.x = 0
             //RIGHT，未越界
-            Direction.RIGHT -> if (this.x + this.speed <= Config.GameWidth - this.width) this.x += this.speed
+            Direction.RIGHT ->
+                if (this.x + this.speed <= Config.GameWidth - this.width) this.x += this.speed
+                else this.y = Config.GameWidth - this.width
         }
     }
 
@@ -77,6 +85,7 @@ interface Movable : BaseView {
         }
         return this.currentDirection
     }
+
 
     /**
      * 通知碰撞

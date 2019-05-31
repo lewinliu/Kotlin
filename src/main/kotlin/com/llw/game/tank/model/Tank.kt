@@ -12,14 +12,13 @@ import org.itheima.kotlin.game.core.Painter
  */
 class Tank(viewX: Int, viewY: Int, var isTwoPlay: Boolean = false) : Movable, Blockade, Suffer {
 
-
     override val width: Int = Config.Block64
     override val height: Int = Config.Block64
 
     override var x: Int = width * viewX
     override var y: Int = height * viewY
 
-    override var suffer: Int = 100
+    override var suffer: Int = 10
 
     override var isDestroy: Boolean = false
 
@@ -53,5 +52,12 @@ class Tank(viewX: Int, viewY: Int, var isTwoPlay: Boolean = false) : Movable, Bl
                 Bullet(this)
             }
         }
+    }
+
+    /**
+     * 通知碰撞
+     */
+    override fun notifyCollision(badDirection: Direction?){
+        this.badDirection = badDirection
     }
 }

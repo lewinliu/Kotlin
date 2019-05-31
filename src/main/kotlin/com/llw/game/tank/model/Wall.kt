@@ -17,7 +17,7 @@ class Wall(viewX: Int, viewY: Int) : Blockade, Suffer {
     override var x: Int = Config.Block64 * viewX
     override var y: Int = Config.Block64 * viewY
 
-    override var suffer: Int = 5
+    override var suffer: Int = 3
 
     override var isDestroy: Boolean = false
 

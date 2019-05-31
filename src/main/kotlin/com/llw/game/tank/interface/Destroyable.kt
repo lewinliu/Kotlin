@@ -7,7 +7,7 @@ interface Destroyable : BaseView {
     var isDestroy: Boolean
 
     fun isDestroyable(): Boolean {
-        if (this.x < 0 || this.y < 0 || this.x > Config.GameWidth || this.y > Config.GameHeight) this.isDestroy = true
+        if (this.x <= -this.width || this.y <= -this.height || this.x >= Config.GameWidth || this.y >= Config.GameHeight) this.isDestroy = true
         return this.isDestroy
     }
 }

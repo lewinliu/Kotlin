@@ -87,4 +87,11 @@ object Config {
         }
     }
 
+    /**
+     * 根据索引获取爆炸图片
+     */
+    fun getBlastImage(imgIndex:Int): String {
+        return "/img/blast_$imgIndex.png"
+    }
+
 }

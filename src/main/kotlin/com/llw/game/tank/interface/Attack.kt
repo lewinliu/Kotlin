@@ -4,7 +4,4 @@ interface Attack : Destroyable {
 
     val attack: Int
 
-    fun attackNotification() {
-        this.isDestroy = true
-    }
 }

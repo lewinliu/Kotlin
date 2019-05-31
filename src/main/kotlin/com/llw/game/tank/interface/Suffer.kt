@@ -4,8 +4,11 @@ interface Suffer : Destroyable {
 
     var suffer: Int
 
-    fun onSuffer(assailant: Attack) {
-        this.suffer -= assailant.attack
-        if (this.suffer < 0) this.isDestroy = true
+    fun notifySuffer(attack: Int) {
+        if (suffer <= 0) {
+            this.isDestroy = true
+            return
+        }
+        this.suffer -= attack
     }
 }
