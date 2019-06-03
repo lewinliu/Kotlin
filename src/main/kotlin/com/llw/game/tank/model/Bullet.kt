@@ -64,6 +64,19 @@ class Bullet(move: Movable) : AutoMovable, Attack {
     }
 
     /**
+     * 正在攻击
+     */
+    override fun onAttacking(move: Movable, block: Blockade):Boolean {
+        this.isDestroy = when{
+            (move is Tank && block is Tank ) || (move is Enemy && block is Enemy)-> false
+            else -> true
+        }
+        println("条件1  =  ${move is Tank && block is Tank}")
+        println("条件2  =  ${move is Enemy && block is Enemy}")
+        return this.isDestroy
+    }
+
+    /**
      * 通知碰撞
      */
     override fun notifyCollision(badDirection: Direction?) {

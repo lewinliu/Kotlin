@@ -2,6 +2,8 @@ package com.llw.game.tank.`interface`
 
 import com.llw.game.tank.config.Config
 import com.llw.game.tank.enum.Direction
+import com.llw.game.tank.model.Enemy
+import com.llw.game.tank.model.Tank
 
 /**
  * 可移动的
@@ -65,6 +67,7 @@ interface Movable : BaseView {
      * 障碍的方向，返回null表示无障碍
      */
     fun willCollision(block: Blockade): Direction? {
+
         when (this.currentDirection) {
             //UP，无障碍
             Direction.UP -> {

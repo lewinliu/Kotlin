@@ -16,8 +16,6 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
     private val collection = ViewCollection()
     private lateinit var tankP1: Tank
     private lateinit var tankP2: Tank
-    private var shotP1: Long = 0
-    private var shotP2: Long = 0
 
     //创建地图
     override fun onCreate() = addMap(Maps.Map1)
@@ -47,11 +45,16 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
 
                 //当 攻 遇到 受
                 if (null != badDirection && move is Attack && !move.isDestroyable() && block is Suffer) {
-                    move.isDestroy = true
-                    //打击效果
-                    collection.add(Blast(move))
-                    println("攻 击 受 :   攻：${move.attack}，   受：${block.suffer}}")
-                    block.notifySuffer(move.attack)
+                    //子弹接受攻击通知
+                    if (move.onAttacking(move, block)) {
+                        //打击效果
+                        collection.add(Blast(move))
+                        println("攻($move) 击 受($block) :   攻：${move.attack}，   受：${block.suffer}}")
+                        //障碍接受被攻击通知
+                        block.notifySuffer(move.attack)
+                    } else {
+                        badDirection = null
+                    }
                 }
             }
             //5.将结果通知运动物
@@ -60,6 +63,11 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
             //自动运动
             if (move is AutoMovable) {
                 move.autoMove()
+                //敌方坦克自动射击
+                if (move is Enemy) {
+                    //一秒钟自动发射一枚子弹
+                    if (move.whetherAttack(1000)) move.shootBullet()
+                }
             }
         }
 
@@ -122,6 +130,12 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
                     '草' -> collection.add(Grass(x, y))
                     '水' -> collection.add(Water(x, y))
                     '基' -> collection.add(Camp(x, y))
+                    '1' -> collection.add(Enemy(x, y, 1))
+                    '2' -> collection.add(Enemy(x, y, 2))
+                    '3' -> collection.add(Enemy(x, y, 3))
+                    '4' -> collection.add(Enemy(x, y, 4))
+                    '5' -> collection.add(Enemy(x, y, 5))
+                    '6' -> collection.add(Enemy(x, y, 6))
                 }
             }
         }
@@ -156,10 +170,7 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
                 tankP1.move(Direction.RIGHT)
             }
             KeyCode.J -> {
-                if (!TimeTool.whetherAttack(shotP1, 500)) {
-                    return
-                }
-                shotP1 = System.currentTimeMillis()
+                if (!tankP1.whetherAttack(500)) return
                 val bullet = tankP1.shootBullet()
                 collection.add(bullet)
             }
@@ -177,10 +188,7 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
                 tankP2.move(Direction.RIGHT)
             }
             KeyCode.ENTER -> {
-                if (!TimeTool.whetherAttack(shotP2, 500)) {
-                    return
-                }
-                shotP2 = System.currentTimeMillis()
+                if (!tankP2.whetherAttack(500)) return
                 val bullet = tankP2.shootBullet()
                 collection.add(bullet)
             }
