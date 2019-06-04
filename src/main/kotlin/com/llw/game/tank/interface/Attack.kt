@@ -4,7 +4,7 @@ interface Attack : Destroyable {
 
     val attack: Int
 
-    fun onAttacking(move: Movable, block: Blockade):Boolean
+    fun onAttacking(block: Blockade):Boolean
 
 
 }

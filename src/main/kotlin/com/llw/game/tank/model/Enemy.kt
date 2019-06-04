@@ -1,10 +1,12 @@
 package com.llw.game.tank.model
 
-import com.llw.game.tank.`interface`.*
+import com.llw.game.tank.`interface`.AutoMovable
+import com.llw.game.tank.`interface`.Blockade
+import com.llw.game.tank.`interface`.ShootAble
+import com.llw.game.tank.`interface`.Suffer
 import com.llw.game.tank.config.Config
 import com.llw.game.tank.enum.Direction
 import org.itheima.kotlin.game.core.Painter
-import kotlin.random.Random
 
 /**
  * 敌方坦克
@@ -22,7 +24,7 @@ class Enemy(viewX: Int, viewY: Int, private val tankType: Int) : AutoMovable, Bl
 
     override var isDestroy: Boolean = false
 
-    override var speed: Int = Config.Block64 / 8
+    override var speed: Int = Config.Block64 / 32
 
     override var currentDirection: Direction = Direction.DOWN
 
@@ -38,46 +40,30 @@ class Enemy(viewX: Int, viewY: Int, private val tankType: Int) : AutoMovable, Bl
      * 自动运动
      */
     override fun autoMove() {
-        //当前方向不能移动则转向
+        //当前方向不能移动
         if (this.badDirection == this.currentDirection) {
-            this.currentDirection = this.randomDirection(Direction.UP)
+            println("----------------------------------->   当前方向有障碍：badDirection=${this.badDirection}")
+            //随机调整方向
+            this.currentDirection = this.randomDirection(this.badDirection!!)
+            println("----------------------------------->   调整方向: ${this.currentDirection}")
             return
         }
-        move(this.currentDirection)
+        move()
     }
 
     /**
      * 随机方向
      */
-    private fun randomDirection(currentDirection: Direction): Direction {
+    private fun randomDirection(badDirection: Direction): Direction {
 
-        val random = (0..3).shuffled().last()
-
-        val randomDirection = when (random) {
+        val randomDirection = when ((0..3).shuffled().last()) {
             0 -> Direction.UP
             1 -> Direction.DOWN
             2 -> Direction.LEFT
             3 -> Direction.RIGHT
-            else -> currentDirection
+            else -> badDirection
         }
-
-//        val randomDirection = when (Random(3).nextInt()) {
-//            0 -> Direction.UP
-//            1 -> Direction.DOWN
-//            2 -> Direction.LEFT
-//            3 -> Direction.RIGHT
-//            else -> currentDirection
-//        }
-        println("random:$random,   random:$randomDirection,   currentDirection:$currentDirection")
-        return if (randomDirection != currentDirection) randomDirection else randomDirection(randomDirection)
+        return if (randomDirection != badDirection) randomDirection else randomDirection(badDirection)
     }
-
-    /**
-     * 通知碰撞
-     */
-    override fun notifyCollision(badDirection: Direction?) {
-        this.badDirection = badDirection
-    }
-
 
 }

@@ -35,10 +35,18 @@ class Tank(viewX: Int, viewY: Int, var isTwoPlay: Boolean = false) : Movable, Bl
         Painter.drawImage(Config.getTankImage(currentDirection, isTwoPlay), x, y)
     }
 
-    /**
-     * 通知碰撞
-     */
-    override fun notifyCollision(badDirection: Direction?) {
-        this.badDirection = badDirection
+    fun moveTank(direction: Direction) {
+        if (this.currentDirection != direction) {
+            //和当前方向不一致时，只调整方向
+            this.currentDirection = direction
+            println("-----------------------------------> Tank   调整方向: ${this.currentDirection}")
+            return
+        }
+
+        if (this.badDirection == this.currentDirection) {
+            println("-----------------------------------> Tank   当前方向有障碍：badDirection=${this.badDirection}")
+            return
+        }
+        move()
     }
 }

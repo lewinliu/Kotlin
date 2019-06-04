@@ -18,7 +18,7 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
     private lateinit var tankP2: Tank
 
     //创建地图
-    override fun onCreate() = addMap(Maps.Map1)
+    override fun onCreate() = addMap(Maps.Map2)
 
     //打印地图
     override fun onDisplay() = collection.draw()
@@ -46,7 +46,7 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
                 //当 攻 遇到 受
                 if (null != badDirection && move is Attack && !move.isDestroyable() && block is Suffer) {
                     //子弹接受攻击通知
-                    if (move.onAttacking(move, block)) {
+                    if (move.onAttacking(block)) {
                         //打击效果
                         collection.add(Blast(move))
                         println("攻($move) 击 受($block) :   攻：${move.attack}，   受：${block.suffer}}")
@@ -158,16 +158,16 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
         when (event.code) {
             //P1
             KeyCode.W -> {
-                tankP1.move(Direction.UP)
+                tankP1.moveTank(Direction.UP)
             }
             KeyCode.A -> {
-                tankP1.move(Direction.LEFT)
+                tankP1.moveTank(Direction.LEFT)
             }
             KeyCode.S -> {
-                tankP1.move(Direction.DOWN)
+                tankP1.moveTank(Direction.DOWN)
             }
             KeyCode.D -> {
-                tankP1.move(Direction.RIGHT)
+                tankP1.moveTank(Direction.RIGHT)
             }
             KeyCode.J -> {
                 if (!tankP1.whetherAttack(500)) return
@@ -176,16 +176,16 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
             }
             //P2
             KeyCode.UP -> {
-                tankP2.move(Direction.UP)
+                tankP2.moveTank(Direction.UP)
             }
             KeyCode.LEFT -> {
-                tankP2.move(Direction.LEFT)
+                tankP2.moveTank(Direction.LEFT)
             }
             KeyCode.DOWN -> {
-                tankP2.move(Direction.DOWN)
+                tankP2.moveTank(Direction.DOWN)
             }
             KeyCode.RIGHT -> {
-                tankP2.move(Direction.RIGHT)
+                tankP2.moveTank(Direction.RIGHT)
             }
             KeyCode.ENTER -> {
                 if (!tankP2.whetherAttack(500)) return

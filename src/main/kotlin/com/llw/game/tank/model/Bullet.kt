@@ -8,7 +8,7 @@ import org.itheima.kotlin.game.core.Painter
 /**
  * 子弹
  */
-class Bullet(move: Movable) : AutoMovable, Attack {
+class Bullet(private val move: Movable) : AutoMovable, Attack {
 
     override var currentDirection: Direction = move.currentDirection
 
@@ -49,28 +49,25 @@ class Bullet(move: Movable) : AutoMovable, Attack {
     /**
      * 重写移动方法，修改移动范围
      */
-    override fun move(direction: Direction) {
+    override fun move() {
         //移动位置
         when (this.currentDirection) {
             //UP，未越界
-            Direction.UP -> if (this.y - this.speed >= -this.height) this.y -= this.speed
+            Direction.UP -> this.y -= this.speed
             //DOWN，未越界
-            Direction.DOWN -> if (this.y + this.speed <= Config.GameHeight) this.y += this.speed
+            Direction.DOWN -> this.y += this.speed
             //LEFT，未越界
-            Direction.LEFT -> if (this.x - this.speed >= -this.width) this.x -= this.speed
+            Direction.LEFT -> this.x -= this.speed
             //RIGHT，未越界
-            Direction.RIGHT -> if (this.x + this.speed <= Config.GameWidth) this.x += this.speed
+            Direction.RIGHT -> this.x += this.speed
         }
     }
 
     /**
      * 正在攻击
      */
-    override fun onAttacking(move: Movable, block: Blockade):Boolean {
-        this.isDestroy = when{
-            (move is Tank && block is Tank ) || (move is Enemy && block is Enemy)-> false
-            else -> true
-        }
+    override fun onAttacking(block: Blockade): Boolean {
+        this.isDestroy = !((move is Tank && block is Tank) || (move is Enemy && block is Enemy))
         println("条件1  =  ${move is Tank && block is Tank}")
         println("条件2  =  ${move is Enemy && block is Enemy}")
         return this.isDestroy
@@ -80,9 +77,8 @@ class Bullet(move: Movable) : AutoMovable, Attack {
      * 通知碰撞
      */
     override fun notifyCollision(badDirection: Direction?) {
-        if (null != badDirection) {
-            this.isDestroy = true
-        }
+        //badDirection不为空则发生碰撞，子弹销毁
+        this.isDestroy = null != badDirection
         super.notifyCollision(badDirection)
     }
 
@@ -93,7 +89,7 @@ class Bullet(move: Movable) : AutoMovable, Attack {
         if (this.badDirection == this.currentDirection) {
             return
         }
-        move(this.currentDirection)
+        move()
     }
 
 }
