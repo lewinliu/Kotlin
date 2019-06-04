@@ -11,8 +11,8 @@ interface ShootAble:Movable {
 
     var lastShotTime: Long
 
-    fun whetherAttack(time: Long): Boolean{
-        if (!TimeTool.timeInterval(lastShotTime, time)) {
+    fun whetherAttack(spaceTime: Long): Boolean{
+        if (!TimeTool.timeInterval(lastShotTime, spaceTime)) {
             return false
         }
         lastShotTime = System.currentTimeMillis()

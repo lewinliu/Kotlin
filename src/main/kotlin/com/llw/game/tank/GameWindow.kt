@@ -60,14 +60,14 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
             //5.将结果通知运动物
             move.notifyCollision(badDirection)
 
+            //敌方坦克自动射击
+            if (move is Enemy) {
+                //一秒钟自动发射一枚子弹
+                if (move.whetherAttack(1000)) collection.add(move.shootBullet())
+            }
             //自动运动
             if (move is AutoMovable) {
                 move.autoMove()
-                //敌方坦克自动射击
-                if (move is Enemy) {
-                    //一秒钟自动发射一枚子弹
-                    if (move.whetherAttack(1000)) move.shootBullet()
-                }
             }
         }
 
