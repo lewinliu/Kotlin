@@ -49,7 +49,6 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
                     if (move.onAttacking(block)) {
                         //打击效果
                         collection.add(Blast(move))
-                        println("攻($move) 击 受($block) :   攻：${move.attack}，   受：${block.suffer}}")
                         //障碍接受被攻击通知
                         block.notifySuffer(move.attack)
                     } else {

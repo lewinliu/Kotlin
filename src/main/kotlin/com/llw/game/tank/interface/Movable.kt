@@ -27,12 +27,21 @@ interface Movable : BaseView {
      * 移动
      */
     fun move() {
+        val isOverstep = isOverstep()
         //移动位置
         when (this.currentDirection) {
-            Direction.UP ->this.y -= this.speed
-            Direction.DOWN ->this.y += this.speed
-            Direction.LEFT ->this.x -= this.speed
-            Direction.RIGHT ->this.x += this.speed
+            Direction.UP ->
+                if (isOverstep) this.y = 0
+                else this.y -= this.speed
+            Direction.DOWN ->
+                if (isOverstep) this.y = Config.GameHeight - this.height
+                else this.y += this.speed
+            Direction.LEFT ->
+                if (isOverstep) this.x = 0
+                else this.x -= this.speed
+            Direction.RIGHT ->
+                if (isOverstep) this.x = Config.GameWidth - this.width
+                else this.x += this.speed
         }
     }
 
@@ -40,7 +49,6 @@ interface Movable : BaseView {
      * 障碍的方向，返回null表示无障碍
      */
     fun willCollision(block: Blockade): Direction? {
-
         when (this.currentDirection) {
             //UP，无障碍
             Direction.UP -> {
@@ -62,12 +70,11 @@ interface Movable : BaseView {
         return this.currentDirection
     }
 
-
     /**
-     * 通知碰撞
+     * 越界判断
      */
-    fun notifyCollision(badDirection: Direction?) {
-        val isBad = when (this.currentDirection) {
+    fun isOverstep(): Boolean {
+        return when (this.currentDirection) {
             //UP，越界
             Direction.UP -> this.y - this.speed < 0
             //DOWN，越界
@@ -77,7 +84,13 @@ interface Movable : BaseView {
             //RIGHT，越界
             Direction.RIGHT -> this.x + this.speed > Config.GameWidth - this.width
         }
-        this.badDirection = if (isBad) this.currentDirection else badDirection
+    }
+
+    /**
+     * 通知碰撞
+     */
+    fun notifyCollision(badDirection: Direction?) {
+        this.badDirection = if (isOverstep()) this.currentDirection else badDirection
     }
 
 }
