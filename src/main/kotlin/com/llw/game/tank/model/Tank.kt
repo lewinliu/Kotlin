@@ -32,7 +32,7 @@ class Tank(viewX: Int, viewY: Int, var isTwoPlay: Boolean = false) : Movable, Bl
     override var lastShotTime: Long = 0
 
     override fun draw() {
-        Painter.drawImage(Config.getTankImage(currentDirection, isTwoPlay), x, y)
+        Painter.drawImage(Config.View.getTankImage(currentDirection, isTwoPlay), x, y)
     }
 
     fun moveTank(direction: Direction) {

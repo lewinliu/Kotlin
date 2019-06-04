@@ -33,7 +33,7 @@ class Enemy(viewX: Int, viewY: Int, private val tankType: Int) : AutoMovable, Bl
     override var lastShotTime: Long = 0
 
     override fun draw() {
-        Painter.drawImage(Config.getEnemyTankImage(tankType, this.currentDirection), x, y)
+        Painter.drawImage(Config.View.getEnemyTankImage(tankType, this.currentDirection), x, y)
     }
 
     /**

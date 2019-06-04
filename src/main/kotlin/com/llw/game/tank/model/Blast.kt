@@ -31,7 +31,7 @@ class Blast(move: Movable) : Destroyable {
     private var imgIndex = 1
 
     override fun draw() {
-        Painter.drawImage(Config.getBlastImage(imgIndex), x, y)
+        Painter.drawImage(Config.View.getBlastImage(imgIndex), x, y)
         if (imgIndex in imgArray) imgIndex++ else this.isDestroy = true
     }
 }

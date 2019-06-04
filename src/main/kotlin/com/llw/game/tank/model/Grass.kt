@@ -16,6 +16,6 @@ class Grass(viewX: Int, viewY: Int) : BaseView {
     override var y: Int = Config.Block64 * viewY
 
     override fun draw() {
-        Painter.drawImage(Config.Grass, x, y)
+        Painter.drawImage(Config.View.Grass, x, y)
     }
 }

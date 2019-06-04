@@ -23,7 +23,7 @@ class Wall(viewX: Int, viewY: Int) : Blockade, Suffer {
 
 
     override fun draw() {
-        Painter.drawImage(Config.Wall, x, y)
+        Painter.drawImage(Config.View.Wall, x, y)
     }
 
 }

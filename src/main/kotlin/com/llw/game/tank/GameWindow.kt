@@ -5,7 +5,6 @@ import com.llw.game.tank.config.Config
 import com.llw.game.tank.config.Maps
 import com.llw.game.tank.enum.Direction
 import com.llw.game.tank.model.*
-import com.llw.game.tank.tools.TimeTool
 import com.llw.game.tank.tools.ViewCollection
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyEvent

@@ -21,6 +21,6 @@ class Steel(viewX: Int, viewY: Int) : Blockade, Suffer {
     override var isDestroy: Boolean = false
 
     override fun draw() {
-        Painter.drawImage(Config.Steel, x, y)
+        Painter.drawImage(Config.View.Steel, x, y)
     }
 }

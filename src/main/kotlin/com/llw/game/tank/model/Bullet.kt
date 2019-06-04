@@ -1,6 +1,9 @@
 package com.llw.game.tank.model
 
-import com.llw.game.tank.`interface`.*
+import com.llw.game.tank.`interface`.Attack
+import com.llw.game.tank.`interface`.AutoMovable
+import com.llw.game.tank.`interface`.Blockade
+import com.llw.game.tank.`interface`.Movable
 import com.llw.game.tank.config.Config
 import com.llw.game.tank.enum.Direction
 import org.itheima.kotlin.game.core.Painter
@@ -13,13 +16,13 @@ class Bullet(private val move: Movable) : AutoMovable, Attack {
     override var currentDirection: Direction = move.currentDirection
 
     override val width: Int = when (currentDirection) {
-        Direction.UP, Direction.DOWN -> Config.Bullet_16
-        Direction.LEFT, Direction.RIGHT -> Config.Bullet_32
+        Direction.UP, Direction.DOWN -> Config.View.Bullet_16
+        Direction.LEFT, Direction.RIGHT -> Config.View.Bullet_32
     }
 
     override val height: Int = when (currentDirection) {
-        Direction.UP, Direction.DOWN -> Config.Bullet_32
-        Direction.LEFT, Direction.RIGHT -> Config.Bullet_16
+        Direction.UP, Direction.DOWN -> Config.View.Bullet_32
+        Direction.LEFT, Direction.RIGHT -> Config.View.Bullet_16
     }
 
     override var x: Int = when (currentDirection) {
@@ -43,7 +46,7 @@ class Bullet(private val move: Movable) : AutoMovable, Attack {
     override var badDirection: Direction? = null
 
     override fun draw() {
-        Painter.drawImage(Config.getBulletImage(currentDirection), x, y)
+        Painter.drawImage(Config.View.getBulletImage(currentDirection), x, y)
     }
 
     /**
@@ -136,7 +139,7 @@ class Bullet(private val move: Movable) : AutoMovable, Attack {
         //发生碰撞销毁子弹
         this.isDestroy = null != this.badDirection
 
-        //if (this.isDestroy)
+        //if (this.isDestroy) Composer.play(Config.Sound.Sound_hit)
     }
 
 }

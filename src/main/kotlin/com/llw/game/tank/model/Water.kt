@@ -16,6 +16,6 @@ class Water(viewX: Int, viewY: Int) : Blockade {
     override var y: Int = Config.Block64 * viewY
 
     override fun draw() {
-        Painter.drawImage(Config.Water, x, y)
+        Painter.drawImage(Config.View.Water, x, y)
     }
 }
