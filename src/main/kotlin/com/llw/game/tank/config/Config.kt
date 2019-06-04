@@ -204,11 +204,11 @@ object Config {
      * 声音
      */
     object Sound {
-        const val Sound_add = "/sound/add.wav"
-        const val Sound_blast = "/sound/blast.wav"
-        const val Sound_fire = "/sound/fire.wav"
-        const val Sound_hit = "/sound/hit.wav"
-        const val Sound_start = "/sound/start.wav"
+        const val Sound_add = "sound/add.wav"
+        const val Sound_blast = "sound/blast.wav"
+        const val Sound_fire = "sound/fire.wav"
+        const val Sound_hit = "sound/hit.wav"
+        const val Sound_start = "sound/start.wav"
     }
 
 

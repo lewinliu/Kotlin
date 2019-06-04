@@ -139,7 +139,6 @@ class Bullet(private val move: Movable) : AutoMovable, Attack {
         //发生碰撞销毁子弹
         this.isDestroy = null != this.badDirection
 
-        //if (this.isDestroy) Composer.play(Config.Sound.Sound_hit)
     }
 
 }

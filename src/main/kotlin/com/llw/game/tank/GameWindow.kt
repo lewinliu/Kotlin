@@ -50,6 +50,7 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
                         collection.add(Blast(move))
                         //障碍接受被攻击通知
                         block.notifySuffer(move.attack)
+
                     } else {
                         badDirection = null
                     }
