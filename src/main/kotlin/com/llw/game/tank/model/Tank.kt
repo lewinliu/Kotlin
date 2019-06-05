@@ -1,9 +1,6 @@
 package com.llw.game.tank.model
 
-import com.llw.game.tank.`interface`.Blockade
-import com.llw.game.tank.`interface`.Movable
-import com.llw.game.tank.`interface`.ShootAble
-import com.llw.game.tank.`interface`.Suffer
+import com.llw.game.tank.`interface`.*
 import com.llw.game.tank.config.Config
 import com.llw.game.tank.enum.Direction
 import org.itheima.kotlin.game.core.Painter
@@ -11,7 +8,7 @@ import org.itheima.kotlin.game.core.Painter
 /**
  * 坦克
  */
-class Tank(viewX: Int, viewY: Int, var isTwoPlay: Boolean = false) : Movable, Blockade, Suffer, ShootAble {
+class Tank(viewX: Int, viewY: Int, var isTwoPlay: Boolean = false) : Movable, Blockade, Suffer, ShootAble {//, Born
 
     override val width: Int = Config.Block64
     override val height: Int = Config.Block64
@@ -31,8 +28,10 @@ class Tank(viewX: Int, viewY: Int, var isTwoPlay: Boolean = false) : Movable, Bl
 
     override var lastShotTime: Long = 0
 
+    //override var isFirstAppear: Boolean = true
+
     override fun draw() {
-        Painter.drawImage(Config.View.getTankImage(currentDirection, isTwoPlay), x, y)
+        /*if (!isFirstAppear)*/ Painter.drawImage(Config.View.getTankImage(currentDirection, isTwoPlay), x, y)
     }
 
     fun moveTank(direction: Direction) {

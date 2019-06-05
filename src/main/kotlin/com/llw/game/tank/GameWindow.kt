@@ -17,7 +17,7 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
     private lateinit var tankP2: Tank
 
     //创建地图
-    override fun onCreate() = addMap(Maps.Map2)
+    override fun onCreate() = addMap(Maps.Map1)
 
     //打印地图
     override fun onDisplay() = collection.draw()
@@ -46,11 +46,10 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
                 if (null != badDirection && move is Attack && !move.isDestroyable() && block is Suffer) {
                     //子弹接受攻击通知
                     if (move.onAttacking(block)) {
-                        //打击效果
-                        collection.add(Blast(move))
                         //障碍接受被攻击通知
-                        block.notifySuffer(move.attack)
-
+                        val blast = block.notifySuffer(move.attack)
+                        //打击效果
+                        if (blast != null) collection.add(blast)
                     } else {
                         badDirection = null
                     }

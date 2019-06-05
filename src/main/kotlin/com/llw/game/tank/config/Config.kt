@@ -90,10 +90,17 @@ object Config {
         }
 
         /**
-         * 根据索引获取爆炸图片
+         * 根据索引获取爆炸效果图片
          */
         fun getBlastImage(imgIndex: Int): String {
             return "/img/blast_$imgIndex.png"
+        }
+
+        /**
+         * 根据索引获取出生效果图片
+         */
+        fun getBornImage(imgIndex: Int): String {
+            return "/img/born_$imgIndex.gif"
         }
 
         // 敌方坦克 type = 1
