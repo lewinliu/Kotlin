@@ -1,8 +1,7 @@
 package com.llw.game.tank.`interface`
 
-import com.llw.game.tank.config.Config
 import com.llw.game.tank.model.Blast
-import org.itheima.kotlin.game.core.Composer
+import com.llw.game.tank.tools.SoundTool
 
 interface Suffer : Destroyable {
 
@@ -11,11 +10,7 @@ interface Suffer : Destroyable {
     fun notifySuffer(attack: Int): Blast? {
 
         //被打击音效
-        try {
-            Composer.play(Config.Sound.Sound_hit)
-        } catch (e: Exception) {
-            println("Suffer.kt error=$e")
-        }
+        SoundTool.hit()
 
         //生命值不大于0时，死亡
         if (suffer <= 0) {

@@ -3,6 +3,9 @@ package com.llw.game.tank.tools
 import com.llw.game.tank.config.Config
 import org.itheima.kotlin.game.core.Composer
 
+/**
+ * 游戏音效
+ */
 object SoundTool {
 
     /**
@@ -24,6 +27,9 @@ object SoundTool {
         }
     }
 
+    /**
+     * 爆炸音效
+     */
     fun blast() {
         try {
             Composer.play(Config.Sound.Sound_blast)
@@ -32,6 +38,9 @@ object SoundTool {
         }
     }
 
+    /**
+     * 添加坦克音效
+     */
     fun add() {
         try {
             Composer.play(Config.Sound.Sound_add)

@@ -3,6 +3,7 @@ package com.llw.game.tank.model
 import com.llw.game.tank.`interface`.Destroyable
 import com.llw.game.tank.`interface`.Suffer
 import com.llw.game.tank.config.Config
+import com.llw.game.tank.tools.SoundTool
 import org.itheima.kotlin.game.core.Painter
 
 /**
@@ -33,6 +34,8 @@ class Blast(suffer: Suffer) : Destroyable {
 
     override fun draw() {
         Painter.drawImage(Config.View.getBlastImage(imgIndex), x, y)
+        //爆炸音效
+        if (imgIndex ==1) SoundTool.blast()
         if (imgIndex in imgArray) imgIndex++ else this.isDestroy = true
     }
 }
