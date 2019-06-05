@@ -11,7 +11,7 @@ import org.itheima.kotlin.game.core.Painter
 /**
  * 子弹
  */
-class Bullet(private val move: Movable) : AutoMovable, Attack {
+class Bullet(private val move: Movable, bulletSpeed: Int) : AutoMovable, Attack {
 
     override var currentDirection: Direction = move.currentDirection
 
@@ -41,7 +41,7 @@ class Bullet(private val move: Movable) : AutoMovable, Attack {
     override var isDestroy: Boolean = false
 
 
-    override val speed: Int = Config.Block64 / 8
+    override val speed: Int = bulletSpeed
 
     override var badDirection: Direction? = null
 
@@ -104,13 +104,13 @@ class Bullet(private val move: Movable) : AutoMovable, Attack {
         //移动位置
         when (this.currentDirection) {
             Direction.UP ->
-                if (isOverstep) this.y = - this.height
+                if (isOverstep) this.y = -this.height
                 else this.y -= this.speed
             Direction.DOWN ->
                 if (isOverstep) this.y = Config.GameHeight
                 else this.y += this.speed
             Direction.LEFT ->
-                if (isOverstep) this.x = - this.width
+                if (isOverstep) this.x = -this.width
                 else this.x -= this.speed
             Direction.RIGHT ->
                 if (isOverstep) this.x = Config.GameWidth
@@ -124,11 +124,11 @@ class Bullet(private val move: Movable) : AutoMovable, Attack {
     override fun isOverstep(): Boolean {
         return when (this.currentDirection) {
             //UP，越界
-            Direction.UP -> this.y <=  - this.height
+            Direction.UP -> this.y <= -this.height
             //DOWN，越界
             Direction.DOWN -> this.y >= Config.GameHeight
             //LEFT，越界
-            Direction.LEFT -> this.x <=  - this.width
+            Direction.LEFT -> this.x <= -this.width
             //RIGHT，越界
             Direction.RIGHT -> this.x >= Config.GameWidth
         }

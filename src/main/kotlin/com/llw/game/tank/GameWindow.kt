@@ -19,7 +19,7 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
 
     //创建地图
     override fun onCreate() {
-        addMap(Maps.Map1)
+        addMap(Maps.Map2)
         SoundTool.start()
     }
 
@@ -65,7 +65,7 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
             //敌方坦克自动射击
             if (move is Enemy) {
                 //一秒钟自动发射一枚子弹
-                if (move.whetherAttack(1000)) collection.add(move.shootBullet())
+                if (move.whetherAttack(5000)) collection.add(move.shootBullet())
             }
             //自动运动
             if (move is AutoMovable) {
