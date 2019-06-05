@@ -71,6 +71,10 @@ class Bullet(private val move: Movable) : AutoMovable, Attack {
      * 障碍的方向，返回null表示无障碍
      */
     override fun willCollision(block: Blockade): Direction? {
+
+        //子弹可以过水墙
+        if (block is Water) return null
+
         when (this.currentDirection) {
             //UP，无障碍
             Direction.UP -> {
