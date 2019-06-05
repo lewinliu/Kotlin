@@ -3,12 +3,13 @@ package com.llw.game.tank.model
 import com.llw.game.tank.`interface`.*
 import com.llw.game.tank.config.Config
 import com.llw.game.tank.enum.Direction
+import com.llw.game.tank.tools.SoundTool
 import org.itheima.kotlin.game.core.Painter
 
 /**
  * 坦克
  */
-class Tank(viewX: Int, viewY: Int, var isTwoPlay: Boolean = false) : Movable, Blockade, Suffer, ShootAble {//, Born
+class Tank(viewX: Int, viewY: Int, var isTwoPlay: Boolean = false) : Movable, Blockade, Suffer, ShootAble, TankBorn() {
 
     override val width: Int = Config.Block64
     override val height: Int = Config.Block64
@@ -28,10 +29,10 @@ class Tank(viewX: Int, viewY: Int, var isTwoPlay: Boolean = false) : Movable, Bl
 
     override var lastShotTime: Long = 0
 
-    //override var isFirstAppear: Boolean = true
-
     override fun draw() {
-        /*if (!isFirstAppear)*/ Painter.drawImage(Config.View.getTankImage(currentDirection, isTwoPlay), x, y)
+        //刚出现时绘制出生效果，然后才绘制坦克
+        if (!drawBorn(this)) Painter.drawImage(Config.View.getTankImage(currentDirection, isTwoPlay), x, y)
+
     }
 
     fun moveTank(direction: Direction) {

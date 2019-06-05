@@ -1,9 +1,6 @@
 package com.llw.game.tank.model
 
-import com.llw.game.tank.`interface`.AutoMovable
-import com.llw.game.tank.`interface`.Blockade
-import com.llw.game.tank.`interface`.ShootAble
-import com.llw.game.tank.`interface`.Suffer
+import com.llw.game.tank.`interface`.*
 import com.llw.game.tank.config.Config
 import com.llw.game.tank.enum.Direction
 import org.itheima.kotlin.game.core.Painter
@@ -11,7 +8,7 @@ import org.itheima.kotlin.game.core.Painter
 /**
  * 敌方坦克
  */
-class Enemy(viewX: Int, viewY: Int, private val tankType: Int) : AutoMovable, Blockade, Suffer, ShootAble {
+class Enemy(viewX: Int, viewY: Int, private val tankType: Int) : AutoMovable, Blockade, Suffer, ShootAble, TankBorn() {
 
 
     override val width: Int = Config.Block64
@@ -33,7 +30,8 @@ class Enemy(viewX: Int, viewY: Int, private val tankType: Int) : AutoMovable, Bl
     override var lastShotTime: Long = 0
 
     override fun draw() {
-        Painter.drawImage(Config.View.getEnemyTankImage(tankType, this.currentDirection), x, y)
+        //刚出现时绘制出生效果，然后才绘制坦克
+        if (!drawBorn(this)) Painter.drawImage(Config.View.getEnemyTankImage(tankType, this.currentDirection), x, y)
     }
 
     /**

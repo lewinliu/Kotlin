@@ -5,6 +5,7 @@ import com.llw.game.tank.config.Config
 import com.llw.game.tank.config.Maps
 import com.llw.game.tank.enum.Direction
 import com.llw.game.tank.model.*
+import com.llw.game.tank.tools.SoundTool
 import com.llw.game.tank.tools.ViewCollection
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyEvent
@@ -17,7 +18,10 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
     private lateinit var tankP2: Tank
 
     //创建地图
-    override fun onCreate() = addMap(Maps.Map1)
+    override fun onCreate() {
+        addMap(Maps.Map1)
+        SoundTool.start()
+    }
 
     //打印地图
     override fun onDisplay() = collection.draw()
