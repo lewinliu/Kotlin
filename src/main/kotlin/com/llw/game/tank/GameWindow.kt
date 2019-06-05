@@ -16,21 +16,27 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
     private val collection = ViewCollection()
     private lateinit var tankP1: Tank
     private lateinit var tankP2: Tank
+    private lateinit var camp: Camp
 
     //创建地图
     override fun onCreate() {
         addMap(Maps.Map2)
+        //游戏开始音效
         SoundTool.start()
     }
 
     //打印地图
-    override fun onDisplay() = collection.draw()
+    override fun onDisplay() {
+        collection.draw()
+    }
 
     //按键监听
     override fun onKeyPressed(event: KeyEvent) = keyControl(event)
 
     //耗时操作
     override fun onRefresh() {
+        //游戏结束
+        if (isGameOver()) return
 
         //1.遍历所有运动物
         collection.filter { it is Movable }.forEach { move ->
@@ -82,6 +88,20 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
         }
     }
 
+    private fun isGameOver(): Boolean {
+        //1.游戏结束，不再添加视图
+        if (camp.isGameOver) {
+            return true
+        }
+        //2.基地被销毁，游戏结束
+        if (camp.isDestroyable()) {
+            collection.add(GameOver())
+            camp.isGameOver = true
+            return true
+        }
+        return false
+    }
+
     /**
      * 筛选最靠近运动物的View
      */
@@ -131,7 +151,6 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
                     '铁' -> collection.add(Steel(x, y))
                     '草' -> collection.add(Grass(x, y))
                     '水' -> collection.add(Water(x, y))
-                    '基' -> collection.add(Camp(x, y))
                     '1' -> collection.add(Enemy(x, y, 1))
                     '2' -> collection.add(Enemy(x, y, 2))
                     '3' -> collection.add(Enemy(x, y, 3))
@@ -141,6 +160,9 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
                 }
             }
         }
+
+        camp = Camp(6, 12)
+        collection.add(camp)
 
         //添加坦克
         tankP1 = Tank(2, 12)

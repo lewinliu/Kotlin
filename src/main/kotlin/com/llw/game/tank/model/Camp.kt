@@ -16,9 +16,11 @@ class Camp(viewX: Int, viewY: Int) : Blockade, Suffer {
     override var x: Int = Config.Block64 * viewX
     override var y: Int = Config.Block64 * viewY
 
-    override var suffer: Int = 5
+    override var suffer: Int = 10
 
     override var isDestroy: Boolean = false
+
+    var isGameOver: Boolean = false
 
     override fun draw() {
         Painter.drawImage(Config.View.Camp, x, y)

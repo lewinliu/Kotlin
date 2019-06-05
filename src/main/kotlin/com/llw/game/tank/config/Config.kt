@@ -14,7 +14,14 @@ object Config {
 
     const val GameHeight = Block64 * 13
 
+
+
     object View{
+
+        //选择
+        const val Select =  "/img/select.gif"
+        //游戏结束
+        const val GameOver =  "/img/gameover.gif"
         
         // 建筑物
         const val Grass = "/img/grass.gif"
