@@ -11,7 +11,7 @@ import org.itheima.kotlin.game.core.Painter
  */
 class Blast(suffer: Suffer) : Destroyable {
 
-    override val tier: Int = 2
+    override val tier: Int = 1
 
     override val width: Int = Config.Block64
     override val height: Int = Config.Block64

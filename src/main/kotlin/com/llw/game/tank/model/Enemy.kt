@@ -10,7 +10,7 @@ import org.itheima.kotlin.game.core.Painter
  */
 class Enemy(viewX: Int, viewY: Int, private val tankType: Int) : AutoMovable, Blockade, Suffer, ShootAble, TankBorn() {
 
-    override val tier: Int = 1
+    override val tier: Int = 3
 
     override val width: Int = Config.Block64
     override val height: Int = Config.Block64

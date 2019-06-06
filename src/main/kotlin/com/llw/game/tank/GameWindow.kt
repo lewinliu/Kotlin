@@ -18,13 +18,13 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
     private lateinit var tankP2: Tank
     private lateinit var camp: Camp
 
-    //层级1：底层，砖墙，坦克
+    //层级1：水地
     private val tier1 = ArrayList<BaseView>()
-    //层级2：水地
+    //层级2：子弹
     private val tier2 = ArrayList<BaseView>()
-    //层级3：子弹
+    //层级3：草地，砖墙，坦克等
     private val tier3 = ArrayList<BaseView>()
-    //层级4：草地
+    //层级4：game over
     private val tier4 = ArrayList<BaseView>()
 
     //创建地图
@@ -219,7 +219,7 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
         }
         //2.基地被销毁，游戏结束
         if (camp.isDestroyable()) {
-            collection.add(GameOver())
+            addView(GameOver())
             camp.isGameOver = true
             return true
         }

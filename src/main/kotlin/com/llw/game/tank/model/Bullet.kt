@@ -13,7 +13,7 @@ import org.itheima.kotlin.game.core.Painter
  */
 class Bullet(private val move: Movable, bulletSpeed: Int) : AutoMovable, Attack {
 
-    override val tier: Int = 3
+    override val tier: Int = 2
 
     override var currentDirection: Direction = move.currentDirection
 
