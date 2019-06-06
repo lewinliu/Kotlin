@@ -19,7 +19,7 @@ class Tank(viewX: Int, viewY: Int, var isTwoPlay: Boolean = false) : Movable, Bl
     override var x: Int = width * viewX
     override var y: Int = height * viewY
 
-    override var suffer: Int = 10
+    override var suffer: Int = 1
 
     override var isDestroy: Boolean = false
 

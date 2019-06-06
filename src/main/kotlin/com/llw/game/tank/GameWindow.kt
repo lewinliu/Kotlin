@@ -14,13 +14,13 @@ import org.itheima.kotlin.game.core.Window
 class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Config.GameHeight) {
 
     private val collection = ViewCollection()
+    private lateinit var option: Option
     private lateinit var tankP1: Tank
     private lateinit var tankP2: Tank
     private lateinit var camp: Camp
 
-    private var isGameOver: Boolean = true
-    private var isDoubleGame: Boolean = false
-    private var mapIndex: Int = 0
+    private var isGameOver: Boolean = false
+    private var mapIndex: Int = -1
 
     //层级1：水地
     private val tier1 = ArrayList<BaseView>()
@@ -33,11 +33,12 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
 
     //创建地图
     override fun onCreate() {
+        if (mapIndex < Maps.mapList.size - 1) mapIndex++ else mapIndex = 0
+
         initMap(Maps.mapList[mapIndex])
         addMap()//添加地图
         //游戏开始音效
         SoundTool.start()
-        if (mapIndex < Maps.mapList.size-1) mapIndex++ else mapIndex = 0
     }
 
     //打印地图
@@ -157,8 +158,10 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
         for (y in 0 until map.size) {
             for (x in 0 until map[y].size) {
                 when (map[y][x]) {
-                    "|" -> addView(Option(x, y))
-                    "-" -> addView(Select(x, y))
+                    "|" -> {
+                        option = Option(x, y)
+                        addView(option)
+                    }
                     "砖" -> addView(Wall(x, y))
                     "铁" -> addView(Steel(x, y))
                     "草" -> addView(Grass(x, y))
@@ -172,7 +175,7 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
                         addView(tankP1)
                     }
                     "p2" -> {
-                        if (isDoubleGame) {
+                        if (option.getIndex() == 1) {
                             tankP2 = Tank(x, y, true)
                             addView(tankP2)
                         }
@@ -216,7 +219,17 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
     private fun removeView(view: BaseView) {
         when (view.tier) {
             1 -> tier1.remove(view)
-            2 -> tier2.remove(view)
+            2 -> {
+                tier2.remove(view)
+                if (tier2.none { it is Tank }) {
+                    //我方坦克死完了，游戏结束
+                    isGameOver = true
+                }
+                if (tier2.none { it is Enemy }) {
+                    //敌方坦克死完了，游戏胜利
+                    onCreate()
+                }
+            }
             3 -> tier3.remove(view)
             4 -> tier4.remove(view)
         }
@@ -264,45 +277,58 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
                 addMap()//重新添加地图
             }
             //P2
-            KeyCode.UP -> {
-                tankP2.moveTank(Direction.UP)
-            }
             KeyCode.LEFT -> {
                 tankP2.moveTank(Direction.LEFT)
-            }
-            KeyCode.DOWN -> {
-                tankP2.moveTank(Direction.DOWN)
             }
             KeyCode.RIGHT -> {
                 tankP2.moveTank(Direction.RIGHT)
             }
-            KeyCode.NUMPAD0 -> {
-                if (!tankP2.whetherAttack(500)) return
-                addView(tankP2.shootBullet())
-                addMap()//重新添加地图
-            }
-
-            //选择模式
-            KeyCode.NUMPAD1 -> {
-                println("小键盘 数字1...")
-                isDoubleGame = false
-            }
-            KeyCode.NUMPAD2 -> {
-                println("小键盘 数字2...")
-                isDoubleGame = true
-            }
-            KeyCode.NUMPAD3 -> {
-                println("小键盘 数字3...")
-            }
-            KeyCode.ENTER -> {
-                println("开始游戏...")
-                if (isGameOver) {
-                    onCreate()
-                    isGameOver = false
-                }
+            //回到选择模式
+            KeyCode.ESCAPE -> {
+                println("退出...")
+                mapIndex = -1
+                isGameOver = true
+                onCreate()
             }
             else -> {
-                println("无操作...")
+                if (mapIndex == 0) {//选择模式
+                    when (event.code) {
+                        KeyCode.UP -> {
+                            option.setIndex(-1)
+                        }
+                        KeyCode.DOWN -> {
+                            option.setIndex(1)
+                        }
+                        KeyCode.ENTER -> {
+                            isGameOver = false
+                            onCreate()
+                        }
+                        else -> println("其他按键...")
+                    }
+                } else {
+                    when (event.code) {//移动与射击模式
+                        KeyCode.UP -> {
+                            tankP2.moveTank(Direction.UP)
+                        }
+                        KeyCode.DOWN -> {
+                            tankP2.moveTank(Direction.DOWN)
+                        }
+                        KeyCode.ENTER -> {
+                            if (isGameOver) {
+                                println("游戏结束，重新开始...")
+                                isGameOver = false
+                                mapIndex = -1
+                                onCreate()
+                            } else {
+                                if (tankP2.isDestroyable()) return
+                                if (!tankP2.whetherAttack(500)) return
+                                addView(tankP2.shootBullet())
+                                addMap()//重新添加地图
+                            }
+                        }
+                        else -> println("其他按键...")
+                    }
+                }
             }
         }
     }
