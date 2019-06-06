@@ -18,21 +18,26 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
     private lateinit var tankP2: Tank
     private lateinit var camp: Camp
 
+    private var isGameOver: Boolean = true
+    private var isDoubleGame: Boolean = false
+    private var mapIndex: Int = 0
+
     //层级1：水地
     private val tier1 = ArrayList<BaseView>()
-    //层级2：子弹
+    //层级2：子弹，坦克等
     private val tier2 = ArrayList<BaseView>()
-    //层级3：草地，砖墙，坦克等
+    //层级3：草地，砖墙等
     private val tier3 = ArrayList<BaseView>()
     //层级4：game over
     private val tier4 = ArrayList<BaseView>()
 
     //创建地图
     override fun onCreate() {
-        initMap(Maps.Map2)
+        initMap(Maps.mapList[mapIndex])
         addMap()//添加地图
         //游戏开始音效
         SoundTool.start()
+        if (mapIndex < Maps.mapList.size-1) mapIndex++ else mapIndex = 0
     }
 
     //打印地图
@@ -127,14 +132,14 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
                     if (move.x >= it.x && move.x + move.width <= it.x + it.width) move.y > it.y
                     else Math.abs(it.x - move.x) < move.width && move.y > it.y
                 Direction.DOWN ->
-                    if (move.x >= it.x && move.x + move.width <= it.x + it.width) move.y < it.y
+                    if (move.x >= it.x && move.x + move.width <= it.x + it.width) move.y <= it.y
                     else Math.abs(it.x - move.x) < move.width && move.y < it.y
                 //左右筛选
                 Direction.LEFT ->
                     if (move.y >= it.y && move.y + move.height <= it.y + it.height) move.x > it.x
                     else Math.abs(it.y - move.y) < move.height && move.x > it.x
                 Direction.RIGHT ->
-                    if (move.y >= it.y && move.y + move.height <= it.y + it.height) move.x < it.x
+                    if (move.y >= it.y && move.y + move.height <= it.y + it.height) move.x <= it.x
                     else Math.abs(it.y - move.y) < move.height && move.x < it.x
             }
         }
@@ -143,29 +148,37 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
     /**
      * 初始化
      */
-    private fun initMap(mapList: Array<Array<Char>>) {
+    private fun initMap(map: Array<Array<String>>) {
+        tier1.clear()
+        tier2.clear()
+        tier3.clear()
+        tier4.clear()
         //添加其他
-        for (y in 0 until mapList.size) {
-            for (x in 0 until mapList[y].size) {
-                when (mapList[y][x]) {
-                    '砖' -> addView(Wall(x, y))
-                    '铁' -> addView(Steel(x, y))
-                    '草' -> addView(Grass(x, y))
-                    '水' -> addView(Water(x, y))
-                    '基' -> {
+        for (y in 0 until map.size) {
+            for (x in 0 until map[y].size) {
+                when (map[y][x]) {
+                    "|" -> addView(Option(x, y))
+                    "-" -> addView(Select(x, y))
+                    "砖" -> addView(Wall(x, y))
+                    "铁" -> addView(Steel(x, y))
+                    "草" -> addView(Grass(x, y))
+                    "水" -> addView(Water(x, y))
+                    "基" -> {
                         camp = Camp(x, y)
                         addView(camp)
                     }
-                    'a' -> {
+                    "p1" -> {
                         tankP1 = Tank(x, y)
                         addView(tankP1)
                     }
-                    'b' -> {
-                        tankP2 = Tank(x, y, true)
-                        addView(tankP2)
+                    "p2" -> {
+                        if (isDoubleGame) {
+                            tankP2 = Tank(x, y, true)
+                            addView(tankP2)
+                        }
                     }
-                    '1', '2', '3', '4', '5', '6' -> {
-                        val type = mapList[y][x].toString().toInt()
+                    "1", "2", "3", "4", "5", "6" -> {
+                        val type = map[y][x].toInt()
                         addView(Enemy(x, y, type))
                     }
                 }
@@ -214,13 +227,14 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
      */
     private fun isGameOver(): Boolean {
         //1.游戏结束，不再添加视图
-        if (camp.isGameOver) {
+        if (isGameOver) {
             return true
         }
         //2.基地被销毁，游戏结束
-        if (camp.isDestroyable()) {
+        if (mapIndex > 0 && camp.isDestroyable()) {
+            isGameOver = true
             addView(GameOver())
-            camp.isGameOver = true
+            addMap()//重新添加地图
             return true
         }
         return false
@@ -262,10 +276,30 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
             KeyCode.RIGHT -> {
                 tankP2.moveTank(Direction.RIGHT)
             }
-            KeyCode.ENTER -> {
+            KeyCode.NUMPAD0 -> {
                 if (!tankP2.whetherAttack(500)) return
                 addView(tankP2.shootBullet())
                 addMap()//重新添加地图
+            }
+
+            //选择模式
+            KeyCode.NUMPAD1 -> {
+                println("小键盘 数字1...")
+                isDoubleGame = false
+            }
+            KeyCode.NUMPAD2 -> {
+                println("小键盘 数字2...")
+                isDoubleGame = true
+            }
+            KeyCode.NUMPAD3 -> {
+                println("小键盘 数字3...")
+            }
+            KeyCode.ENTER -> {
+                println("开始游戏...")
+                if (isGameOver) {
+                    onCreate()
+                    isGameOver = false
+                }
             }
             else -> {
                 println("无操作...")

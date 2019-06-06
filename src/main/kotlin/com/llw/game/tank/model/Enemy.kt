@@ -10,7 +10,7 @@ import org.itheima.kotlin.game.core.Painter
  */
 class Enemy(viewX: Int, viewY: Int, private val tankType: Int) : AutoMovable, Blockade, Suffer, ShootAble, TankBorn() {
 
-    override val tier: Int = 3
+    override val tier: Int = 2
 
     override val width: Int = Config.Block64
     override val height: Int = Config.Block64
@@ -41,10 +41,8 @@ class Enemy(viewX: Int, viewY: Int, private val tankType: Int) : AutoMovable, Bl
     override fun autoMove() {
         //当前方向不能移动
         if (this.badDirection == this.currentDirection) {
-            println("----------------------------------->   当前方向有障碍：badDirection=${this.badDirection}")
             //随机调整方向
             this.currentDirection = this.randomDirection(this.badDirection!!)
-            println("----------------------------------->   调整方向: ${this.currentDirection}")
             return
         }
         move()

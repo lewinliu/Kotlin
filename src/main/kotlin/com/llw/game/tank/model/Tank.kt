@@ -11,7 +11,7 @@ import org.itheima.kotlin.game.core.Painter
  */
 class Tank(viewX: Int, viewY: Int, var isTwoPlay: Boolean = false) : Movable, Blockade, Suffer, ShootAble, TankBorn() {
 
-    override val tier: Int = 3
+    override val tier: Int = 2
 
     override val width: Int = Config.Block64
     override val height: Int = Config.Block64
@@ -41,12 +41,10 @@ class Tank(viewX: Int, viewY: Int, var isTwoPlay: Boolean = false) : Movable, Bl
         if (this.currentDirection != direction) {
             //和当前方向不一致时，只调整方向
             this.currentDirection = direction
-            println("-----------------------------------> Tank   调整方向: ${this.currentDirection}")
             return
         }
 
         if (this.badDirection == this.currentDirection) {
-            println("-----------------------------------> Tank   当前方向有障碍：badDirection=${this.badDirection}")
             return
         }
         move()

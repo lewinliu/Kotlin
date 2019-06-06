@@ -22,8 +22,6 @@ class Camp(viewX: Int, viewY: Int) : Blockade, Suffer {
 
     override var isDestroy: Boolean = false
 
-    var isGameOver: Boolean = false
-
     override fun draw() {
         Painter.drawImage(Config.View.Camp, x, y)
     }

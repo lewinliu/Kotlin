@@ -18,8 +18,10 @@ object Config {
 
     object View{
 
+        //选项
+        const val Option =  "/img/select.gif"
         //选择
-        const val Select =  "/img/select.gif"
+        const val Select =  "/img/select_tank.gif"
         //游戏结束
         const val GameOver =  "/img/gameover.gif"
         
