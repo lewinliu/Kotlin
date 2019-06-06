@@ -221,10 +221,6 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
             1 -> tier1.remove(view)
             2 -> {
                 tier2.remove(view)
-                if (tier2.none { it is Tank }) {
-                    //我方坦克死完了，游戏结束
-                    isGameOver = true
-                }
                 if (tier2.none { it is Enemy }) {
                     //敌方坦克死完了，游戏胜利
                     onCreate()
@@ -243,12 +239,21 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
         if (isGameOver) {
             return true
         }
-        //2.基地被销毁，游戏结束
-        if (mapIndex > 0 && camp.isDestroyable()) {
-            isGameOver = true
-            addView(GameOver())
-            addMap()//重新添加地图
-            return true
+        //2.基地被销毁，或者我方坦克全部go die，游戏结束
+        if (mapIndex > 0) {
+            if (camp.isDestroyable()) {
+                isGameOver = true
+            } else {
+                when (option.getIndex()) {
+                    0 -> isGameOver = tankP1.isDestroyable()
+                    1 -> isGameOver = tankP1.isDestroyable() && tankP2.isDestroyable()
+                }
+            }
+            if (isGameOver) {
+                addView(GameOver())
+                addMap()
+                return true
+            }
         }
         return false
     }
@@ -300,6 +305,7 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
                             option.setIndex(1)
                         }
                         KeyCode.ENTER -> {
+                            if (option.getIndex() == 2) return
                             isGameOver = false
                             onCreate()
                         }
