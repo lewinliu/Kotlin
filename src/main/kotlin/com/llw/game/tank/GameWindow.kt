@@ -18,9 +18,19 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
     private lateinit var tankP2: Tank
     private lateinit var camp: Camp
 
+    //层级1：底层，砖墙，坦克
+    private val tier1 = ArrayList<BaseView>()
+    //层级2：水地
+    private val tier2 = ArrayList<BaseView>()
+    //层级3：子弹
+    private val tier3 = ArrayList<BaseView>()
+    //层级4：草地
+    private val tier4 = ArrayList<BaseView>()
+
     //创建地图
     override fun onCreate() {
-        addMap(Maps.Map2)
+        initMap(Maps.Map2)
+        addMap()//添加地图
         //游戏开始音效
         SoundTool.start()
     }
@@ -70,8 +80,11 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
 
             //敌方坦克自动射击
             if (move is Enemy) {
-                //一秒钟自动发射一枚子弹
-                if (move.whetherAttack(5000)) collection.add(move.shootBullet())
+                //5秒钟自动发射一枚子弹
+                if (move.whetherAttack(5000)) {
+                    addView(move.shootBullet())
+                    addMap()//重新添加地图
+                }
             }
             //自动运动
             if (move is AutoMovable) {
@@ -82,24 +95,13 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
         //销毁
         collection.remove { view ->
             if (view is Destroyable) {
-                return@remove view.isDestroyable()
+                if (view.isDestroyable()) {
+                    removeView(view)
+                    return@remove view.isDestroyable()
+                }
             }
             return@remove false
         }
-    }
-
-    private fun isGameOver(): Boolean {
-        //1.游戏结束，不再添加视图
-        if (camp.isGameOver) {
-            return true
-        }
-        //2.基地被销毁，游戏结束
-        if (camp.isDestroyable()) {
-            collection.add(GameOver())
-            camp.isGameOver = true
-            return true
-        }
-        return false
     }
 
     /**
@@ -139,40 +141,89 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
     }
 
     /**
-     * 添加地图
+     * 初始化
      */
-    private fun addMap(mapList: Array<Array<Char>>) {
-        collection.clear()
+    private fun initMap(mapList: Array<Array<Char>>) {
         //添加其他
         for (y in 0 until mapList.size) {
             for (x in 0 until mapList[y].size) {
                 when (mapList[y][x]) {
-                    '砖' -> collection.add(Wall(x, y))
-                    '铁' -> collection.add(Steel(x, y))
-                    '草' -> collection.add(Grass(x, y))
-                    '水' -> collection.add(Water(x, y))
-                    '1' -> collection.add(Enemy(x, y, 1))
-                    '2' -> collection.add(Enemy(x, y, 2))
-                    '3' -> collection.add(Enemy(x, y, 3))
-                    '4' -> collection.add(Enemy(x, y, 4))
-                    '5' -> collection.add(Enemy(x, y, 5))
-                    '6' -> collection.add(Enemy(x, y, 6))
+                    '砖' -> addView(Wall(x, y))
+                    '铁' -> addView(Steel(x, y))
+                    '草' -> addView(Grass(x, y))
+                    '水' -> addView(Water(x, y))
+                    '基' -> {
+                        camp = Camp(x, y)
+                        addView(camp)
+                    }
+                    'a' -> {
+                        tankP1 = Tank(x, y)
+                        addView(tankP1)
+                    }
+                    'b' -> {
+                        tankP2 = Tank(x, y, true)
+                        addView(tankP2)
+                    }
+                    '1', '2', '3', '4', '5', '6' -> {
+                        val type = mapList[y][x].toString().toInt()
+                        addView(Enemy(x, y, type))
+                    }
                 }
             }
         }
+    }
 
-        camp = Camp(6, 12)
-        collection.add(camp)
+    /**
+     * 添加地图
+     */
+    private fun addMap() {
+        collection.clear()
+        collection.addAll(tier1)
+        collection.addAll(tier2)
+        collection.addAll(tier3)
+        collection.addAll(tier4)
+    }
 
-        //添加坦克
-        tankP1 = Tank(2, 12)
-        tankP1.speed = 16
-        collection.add(tankP1)
 
-        tankP2 = Tank(10, 12, true)
-        tankP2.speed = 16
-        collection.add(tankP2)
+    /**
+     * 在地图中添加view
+     */
+    private fun addView(view: BaseView) {
+        when (view.tier) {
+            1 -> tier1.add(view)
+            2 -> tier2.add(view)
+            3 -> tier3.add(view)
+            4 -> tier4.add(view)
+        }
+    }
 
+    /**
+     * 在地图中移除view
+     */
+    private fun removeView(view: BaseView) {
+        when (view.tier) {
+            1 -> tier1.remove(view)
+            2 -> tier2.remove(view)
+            3 -> tier3.remove(view)
+            4 -> tier4.remove(view)
+        }
+    }
+
+    /**
+     * 判断游戏是否结束
+     */
+    private fun isGameOver(): Boolean {
+        //1.游戏结束，不再添加视图
+        if (camp.isGameOver) {
+            return true
+        }
+        //2.基地被销毁，游戏结束
+        if (camp.isDestroyable()) {
+            collection.add(GameOver())
+            camp.isGameOver = true
+            return true
+        }
+        return false
     }
 
     /**
@@ -195,8 +246,8 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
             }
             KeyCode.J -> {
                 if (!tankP1.whetherAttack(500)) return
-                val bullet = tankP1.shootBullet()
-                collection.add(bullet)
+                addView(tankP1.shootBullet())
+                addMap()//重新添加地图
             }
             //P2
             KeyCode.UP -> {
@@ -213,8 +264,8 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
             }
             KeyCode.ENTER -> {
                 if (!tankP2.whetherAttack(500)) return
-                val bullet = tankP2.shootBullet()
-                collection.add(bullet)
+                addView(tankP2.shootBullet())
+                addMap()//重新添加地图
             }
             else -> {
                 println("无操作...")

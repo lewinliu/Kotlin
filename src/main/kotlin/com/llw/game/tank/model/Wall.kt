@@ -10,6 +10,7 @@ import org.itheima.kotlin.game.core.Painter
  */
 class Wall(viewX: Int, viewY: Int) : Blockade, Suffer {
 
+    override val tier: Int = 1
 
     override val width: Int = Config.Block64
     override val height: Int = Config.Block64

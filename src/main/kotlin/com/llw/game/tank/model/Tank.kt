@@ -11,6 +11,8 @@ import org.itheima.kotlin.game.core.Painter
  */
 class Tank(viewX: Int, viewY: Int, var isTwoPlay: Boolean = false) : Movable, Blockade, Suffer, ShootAble, TankBorn() {
 
+    override val tier: Int = 1
+
     override val width: Int = Config.Block64
     override val height: Int = Config.Block64
 

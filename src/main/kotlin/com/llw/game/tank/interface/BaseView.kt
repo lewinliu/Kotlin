@@ -23,6 +23,11 @@ interface BaseView {
     val height: Int
 
     /**
+     * 层级，决定添加到地图中的顺序
+     */
+    val tier: Int
+
+    /**
      * 绘制
      */
     fun draw()

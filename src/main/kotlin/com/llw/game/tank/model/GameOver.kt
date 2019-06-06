@@ -11,6 +11,8 @@ import org.itheima.kotlin.game.core.Painter
  */
 class GameOver : BaseView {
 
+    override val tier: Int = 5
+
     override val width: Int = Config.GameWidth
     override val height: Int = Config.GameHeight
 

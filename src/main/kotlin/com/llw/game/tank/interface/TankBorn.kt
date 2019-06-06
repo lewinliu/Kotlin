@@ -17,7 +17,6 @@ open class TankBorn {
             appearArray.add(3)
             appearArray.add(4)
         }
-        println("appearArray size = ${appearArray.size}")
     }
 
     var imgIndex = 0

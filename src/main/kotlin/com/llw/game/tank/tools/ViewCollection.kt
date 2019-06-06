@@ -1,18 +1,10 @@
 package com.llw.game.tank.tools
 
-import com.llw.game.tank.GameWindow
 import com.llw.game.tank.`interface`.BaseView
 
 class ViewCollection {
 
     private var views = ArrayList<BaseView>()
-
-    @Synchronized
-    fun getViews(): MutableListIterator<BaseView> {
-        synchronized(ViewCollection::class.java) {
-            return views.listIterator()
-        }
-    }
 
     @Synchronized
     fun draw() {
@@ -23,7 +15,7 @@ class ViewCollection {
 
     @Synchronized
     fun filter(predicate: (BaseView) -> Boolean): List<BaseView> {
-        synchronized(GameWindow::class.java) {
+        synchronized(ViewCollection::class.java) {
             return views.filter(predicate)
         }
     }
@@ -31,15 +23,23 @@ class ViewCollection {
     @Synchronized
     fun add(view: BaseView) {
         synchronized(ViewCollection::class.java) {
-            getViews().add(view)
+            views.add(view)
             println("-------->add $view,    view(${view.x},${view.y})")
+        }
+    }
+
+    @Synchronized
+    fun addAll(list: ArrayList<BaseView>) {
+        synchronized(ViewCollection::class.java) {
+            views.addAll(list)
+            println("-------->addAll $list,    add ${list.size} view")
         }
     }
 
     @Synchronized
     fun remove(ifs: (view: BaseView) -> Boolean) {
         synchronized(ViewCollection::class.java) {
-            val it = getViews()
+            val it = views.listIterator()
             while (it.hasNext()) {
                 val v = it.next()
                 if (ifs(v)) {
