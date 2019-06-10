@@ -103,6 +103,11 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
             if (view is Destroyable) {
                 if (view.isDestroyable()) {
                     removeView(view)
+                    //敌方坦克死完了，游戏胜利
+                    if (tier2.none { it is Enemy }) {
+                        isGameOver = false
+                        onCreate()
+                    }
                     return@remove view.isDestroyable()
                 }
             }
@@ -159,7 +164,7 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
             for (x in 0 until map[y].size) {
                 when (map[y][x]) {
                     "|" -> {
-                        option = Option(x, y)
+                        option = Option()
                         addView(option)
                     }
                     "砖" -> addView(Wall(x, y))
@@ -194,10 +199,10 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
      */
     private fun addMap() {
         collection.clear()
-        collection.addAll(tier1)
-        collection.addAll(tier2)
-        collection.addAll(tier3)
-        collection.addAll(tier4)
+        if (tier1.size > 0) collection.addAll(tier1)
+        if (tier2.size > 0) collection.addAll(tier2)
+        if (tier3.size > 0) collection.addAll(tier3)
+        if (tier4.size > 0) collection.addAll(tier4)
     }
 
 
@@ -219,13 +224,7 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
     private fun removeView(view: BaseView) {
         when (view.tier) {
             1 -> tier1.remove(view)
-            2 -> {
-                tier2.remove(view)
-                if (tier2.none { it is Enemy }) {
-                    //敌方坦克死完了，游戏胜利
-                    onCreate()
-                }
-            }
+            2 -> tier2.remove(view)
             3 -> tier3.remove(view)
             4 -> tier4.remove(view)
         }
@@ -292,7 +291,7 @@ class GameWindow : Window(Config.GameName, Config.GameIcon, Config.GameWidth, Co
             KeyCode.ESCAPE -> {
                 println("退出...")
                 mapIndex = -1
-                isGameOver = true
+                isGameOver = false
                 onCreate()
             }
             else -> {

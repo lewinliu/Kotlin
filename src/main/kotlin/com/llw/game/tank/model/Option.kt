@@ -9,15 +9,15 @@ import org.itheima.kotlin.game.core.Painter
 /**
  * 选项
  */
-class Option(viewX: Int, viewY: Int) : Blockade {
+class Option : Blockade {
 
     override val tier: Int = 1
 
     override val width: Int = 192
     override val height: Int = 192
 
-    override var x: Int = Config.Block64 * viewX
-    override var y: Int = Config.Block64 * viewY
+    override var x: Int = Config.Block64 * 4
+    override var y: Int = Config.Block64 * 5
 
     private val selectW: Int = 32
     private val selectH: Int = 32
